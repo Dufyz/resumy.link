@@ -3,14 +3,16 @@ import {
   createUser,
   findUserById,
   updateUser,
+  findUserByEmail,
 } from "../../application/usecases/user";
 import { userRepository } from "../../infra/database/repositories/user.repository";
 import { Request, Response } from "express";
-import { getUserByIdSchema } from "../validators/schemas/user/getUserById.schema";
-import { postUserSchema } from "../validators/schemas/user/postUser.schema";
-import { patchUserschema } from "../validators/schemas/user/patchUser.schema";
-import { getUserByEmailSchema } from "../validators/schemas/user/getUserByEmail.schema";
-import { findUserByEmail } from "../../application/usecases/user/findUserByEmail.usecase";
+import {
+  getUserByIdSchema,
+  getUserByEmailSchema,
+  patchUserschema,
+  postUserSchema,
+} from "../validators/schemas/user";
 
 export async function handleGetUserById(req: Request, res: Response) {
   const { id } = req.params as unknown as z.infer<
@@ -38,7 +40,7 @@ export async function handleGetUserById(req: Request, res: Response) {
 }
 
 export async function handleGetUserByEmail(req: Request, res: Response) {
-  const { email } = req.query as unknown as z.infer<
+  const { email } = req.params as unknown as z.infer<
     typeof getUserByEmailSchema
   >["params"];
 

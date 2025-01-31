@@ -1,5 +1,6 @@
 import { Router } from "express";
 import userRoutes from "./user.routes";
+import portfolioRoutes from "./portfolio.routes";
 
 const routes = Router();
 const apiRoutes = Router();
@@ -9,6 +10,7 @@ apiRoutes.get("/health-check", (_, res) => {
 });
 
 apiRoutes.use(userRoutes);
+apiRoutes.use(portfolioRoutes);
 
 routes.use("/api", apiRoutes);
 

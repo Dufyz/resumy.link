@@ -2,9 +2,12 @@ import { Router } from "express";
 
 import * as UserController from "../controllers/user.controller";
 import { validate } from "../middlewares/zod.middleware";
-import { getUserByIdSchema } from "../validators/schemas/user/getUserById.schema";
-import { postUserSchema } from "../validators/schemas/user/postUser.schema";
-import { patchUserschema } from "../validators/schemas/user/patchUser.schema";
+import {
+  getUserByIdSchema,
+  getUserByEmailSchema,
+  patchUserschema,
+  postUserSchema,
+} from "../validators/schemas/user";
 
 const userRoutes = Router();
 
@@ -14,11 +17,10 @@ userRoutes.get(
   UserController.handleGetUserById
 );
 
-userRoutes.get("/users/email/:email", UserController.handleGetUserByEmail);
-
 userRoutes.get(
-  "users/username/:username",
-  UserController.handleGetUserByUsername
+  "/users/email/:email",
+  validate(getUserByEmailSchema),
+  UserController.handleGetUserByEmail
 );
 
 userRoutes.post(

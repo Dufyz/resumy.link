@@ -1,0 +1,17 @@
+meta {
+  name: PATCH Portfolio
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{api_url}}/portfolios
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Portfolio-name-updated"
+  }
+}
