@@ -11,8 +11,6 @@ import { postUserSchema } from "../validators/schemas/user/postUser.schema";
 import { patchUserschema } from "../validators/schemas/user/patchUser.schema";
 import { getUserByEmailSchema } from "../validators/schemas/user/getUserByEmail.schema";
 import { findUserByEmail } from "../../application/usecases/user/findUserByEmail.usecase";
-import { getUserByUsernameSchema } from "../validators/schemas/user/getUserByUsername.schema";
-import { findUserByUsername } from "../../application/usecases/user/findUserByUsername.usecase";
 
 export async function handleGetUserById(req: Request, res: Response) {
   const { id } = req.params as unknown as z.infer<
@@ -64,39 +62,13 @@ export async function handleGetUserByEmail(req: Request, res: Response) {
   });
 }
 
-export async function handleGetUserByUsername(req: Request, res: Response) {
-  const { username } = req.query as unknown as z.infer<
-    typeof getUserByUsernameSchema
-  >["params"];
-
-  const userOrError = await findUserByUsername(userRepository)(username);
-
-  if (userOrError.isFailure()) {
-    res.status(404).json({ message: userOrError.value.message });
-    return;
-  }
-
-  const user = userOrError.value;
-
-  if (user === null) {
-    res.status(404).json({ user, message: "User not found" });
-    return;
-  }
-
-  res.status(200).json({
-    user,
-    message: "User found",
-  });
-}
-
 export async function handlePostUser(req: Request, res: Response) {
-  const { name, username, email } = req.body as unknown as z.infer<
+  const { name, email } = req.body as unknown as z.infer<
     typeof postUserSchema
   >["body"];
 
   const userOrError = await createUser(userRepository)({
     name,
-    username,
     email,
   });
 
@@ -116,13 +88,12 @@ export async function handlePatchUser(req: Request, res: Response) {
   const { id } = req.params as unknown as z.infer<
     typeof patchUserschema
   >["params"];
-  const { name, username, email } = req.body as unknown as z.infer<
+  const { name, email } = req.body as unknown as z.infer<
     typeof patchUserschema
   >["body"];
 
   const userOrError = await updateUser(userRepository)(id, {
     name,
-    username,
     email,
   });
 

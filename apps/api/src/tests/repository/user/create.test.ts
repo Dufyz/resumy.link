@@ -5,13 +5,11 @@ describe("User repository - Create", () => {
   it("Should successfully create a user", async () => {
     const baseUser = {
       name: "User",
-      username: v4(),
       email: `${v4()}@email.com`,
     };
 
     const userOrError = await userRepository.create({
       name: baseUser.name,
-      username: baseUser.username,
       email: baseUser.email,
     });
 
@@ -23,7 +21,6 @@ describe("User repository - Create", () => {
     expect(user).toEqual({
       id: expect.any(String),
       name: baseUser.name,
-      username: baseUser.username,
       email: baseUser.email,
       created_at: expect.any(Date),
       updated_at: expect.any(Date),

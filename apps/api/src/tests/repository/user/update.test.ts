@@ -5,13 +5,11 @@ describe("User repository - Update", () => {
   it("Should successfully update a user", async () => {
     const baseUser = {
       name: "User",
-      username: v4(),
       email: `${v4()}@email.com`,
     };
 
     const createdUserOrError = await userRepository.create({
       name: baseUser.name,
-      username: baseUser.username,
       email: baseUser.email,
     });
 
@@ -34,7 +32,6 @@ describe("User repository - Update", () => {
     expect(user).toEqual({
       id: createdUserOrError.value.id.toString(),
       name: "User Updated",
-      username: baseUser.username,
       email: baseUser.email,
       created_at: createdUserOrError.value.created_at,
       updated_at: expect.any(Date),

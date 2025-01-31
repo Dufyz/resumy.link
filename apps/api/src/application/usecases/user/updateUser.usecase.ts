@@ -7,11 +7,10 @@ export const updateUser =
   (userRepository: UserRepository) =>
   async (
     id: number,
-    body: Partial<Pick<User, "name" | "username" | "email">>
+    body: Partial<Pick<User, "name" | "email">>
   ): Promise<Either<RepositoryErrors, User>> => {
     const userOrError = await userRepository.update(id, {
       name: body.name,
-      username: body.username,
       email: body.email,
     });
 

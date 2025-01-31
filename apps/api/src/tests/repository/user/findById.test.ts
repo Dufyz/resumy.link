@@ -5,13 +5,11 @@ describe("User repository - Find by id", () => {
   it("Should successfully find a user by id", async () => {
     const baseUser = {
       name: "User",
-      username: v4(),
       email: `${v4()}@email.com`,
     };
 
     const createdUserOrError = await userRepository.create({
       name: baseUser.name,
-      username: baseUser.username,
       email: baseUser.email,
     });
 
@@ -31,7 +29,6 @@ describe("User repository - Find by id", () => {
     expect(user).toEqual({
       id: createdUserOrError.value.id.toString(),
       name: baseUser.name,
-      username: baseUser.username,
       email: baseUser.email,
       created_at: createdUserOrError.value.created_at,
       updated_at: createdUserOrError.value.updated_at,
