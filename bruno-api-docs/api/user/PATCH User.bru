@@ -1,0 +1,21 @@
+meta {
+  name: PATCH User
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{api_url}}/users/:id
+  body: json
+  auth: none
+}
+
+params:path {
+  id: 2
+}
+
+body:json {
+  {
+    "name": "guilherme updated"
+  }
+}
