@@ -1,0 +1,15 @@
+meta {
+  name: DELETE Section
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{api_url}}/sections/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 1
+}
