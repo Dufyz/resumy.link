@@ -1,0 +1,30 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev  --respawn --transpile-only --ignore node_modules src/cmd/server.ts",
+    "build": "tsc --build && copyfiles --up 1 'src/**/*.sql' dist",
+    "test": "NODE_ENV=test jest --detectOpenHandles --forceExit --runInBand",
+    "migrate:up": "knex migrate:latest --env development && knex migrate:latest --env test",
+    "migrate:down": "knex migrate:rollback --env development && knex migrate:rollback --env test",
+    "seed": "knex seed:run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "postgres": "^3.4.5"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.12.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.3"
+  }
+}
