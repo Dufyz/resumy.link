@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "node dist/cmd/server.js",
     "dev": "ts-node-dev  --respawn --transpile-only --ignore node_modules src/cmd/server.ts",
     "build": "tsc --build && copyfiles --up 1 'src/**/*.sql' dist",
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit --runInBand",
     "migrate:up": "knex migrate:latest --env development && knex migrate:latest --env test",
     "migrate:down": "knex migrate:rollback --env development && knex migrate:rollback --env test",
+    "migrate:add": "knex migrate:make",
     "seed": "knex seed:run"
   },
   "keywords": [],
@@ -19,11 +20,18 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "helmet": "^8.0.0",
+    "jest": "^29.7.0",
+    "knex": "^3.1.0",
+    "pg": "^8.13.1",
     "postgres": "^3.4.5",
+    "ts-jest": "^29.2.5",
+    "uuid": "^11.0.5",
+    "v4": "^0.0.1",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
     "@types/node": "^22.12.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.3"
