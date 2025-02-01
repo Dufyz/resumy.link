@@ -23,7 +23,7 @@ export default function HeroSection() {
             <div className="relative">
               <input
                 type="text"
-                placeholder="resumy.link/seu-nome"
+                placeholder="resumy.link/username"
                 className="w-full sm:w-64 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
