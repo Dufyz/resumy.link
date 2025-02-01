@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Code, Globe, Share2, Zap } from "lucide-react";
+import { redirect } from "next/navigation";
 
 const features = [
   {
@@ -69,7 +72,12 @@ export default function FeaturesSection() {
                 Resumy.link para compartilhar seu trabalho e se conectar com
                 oportunidades.
               </p>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg rounded-lg">
+              <Button
+                onClick={() => {
+                  redirect("/login?mode=sign-up");
+                }}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg rounded-lg"
+              >
                 Comece agora gratuitamente
               </Button>
             </div>

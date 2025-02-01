@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Code2, Menu, X } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,10 +22,21 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button variant="ghost" className="hidden sm:inline-flex">
+          <Button
+            variant="ghost"
+            className="hidden sm:inline-flex"
+            onClick={() => {
+              redirect("/login");
+            }}
+          >
             Entrar
           </Button>
-          <Button className="bg-blue-600 text-white hover:bg-blue-700">
+          <Button
+            className="bg-blue-600 text-white hover:bg-blue-700"
+            onClick={() => {
+              redirect("/login?mode=sign-up");
+            }}
+          >
             Criar conta
           </Button>
           <Button

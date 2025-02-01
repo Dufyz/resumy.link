@@ -1,6 +1,9 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Terminal, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 export default function HeroSection() {
   return (
@@ -27,7 +30,12 @@ export default function HeroSection() {
                 className="w-full sm:w-64 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-8 py-6 text-lg inline-flex items-center gap-2 group">
+            <Button
+              onClick={() => {
+                redirect("/login?mode=sign-up");
+              }}
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-8 py-6 text-lg inline-flex items-center gap-2 group"
+            >
               Criar meu portfólio
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
