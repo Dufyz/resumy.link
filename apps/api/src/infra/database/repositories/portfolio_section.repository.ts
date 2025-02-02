@@ -3,15 +3,15 @@ import { PortfolioSectionRepository } from "../../../application/interfaces/port
 import {
   parsePortfolioSectionFromDB,
   PortfolioSection,
-} from "../../../domain/portfolio/portfolio_sections";
+} from "../../../domain/portfolio/portfolio_section";
 import { failure, success } from "../../../shared/utils/either";
 import { filterObjNullishValues } from "../../../shared/utils/filterObjNullishValues";
 import sql from "../postgresql";
 
-export const sectionRepository: PortfolioSectionRepository = {
+export const portfolioSectionRepository: PortfolioSectionRepository = {
   create: async (body) => {
     try {
-      const sectionToCreate: Pick<
+      const portfolioSectionToCreate: Pick<
         PortfolioSection,
         "portfolio_id" | "type" | "is_active"
       > = {
@@ -21,22 +21,27 @@ export const sectionRepository: PortfolioSectionRepository = {
       };
 
       const colsToInsert = Object.keys(
-        sectionToCreate
-      ) as (keyof typeof sectionToCreate)[];
+        portfolioSectionToCreate
+      ) as (keyof typeof portfolioSectionToCreate)[];
 
-      const [section] = await sql`
-        INSERT INTO sections ${sql(sectionToCreate, colsToInsert)}
+      const [portfolioSection] = await sql`
+        INSERT INTO portfolio_sections ${sql(
+          portfolioSectionToCreate,
+          colsToInsert
+        )}
         RETURNING id, portfolio_id, is_active, type, created_at, updated_at
       `;
 
-      return success(parsePortfolioSectionFromDB(section as PortfolioSection));
+      return success(
+        parsePortfolioSectionFromDB(portfolioSection as PortfolioSection)
+      );
     } catch (e: any) {
       return failure(getRepositoryError(e));
     }
   },
   update: async (id, body) => {
     try {
-      const sectionToUpdate: Partial<
+      const portfolioSectionToUpdate: Partial<
         Pick<PortfolioSection, "type" | "is_active">
       > = filterObjNullishValues({
         type: body.type,
@@ -44,17 +49,19 @@ export const sectionRepository: PortfolioSectionRepository = {
       });
 
       const colsToUpdate = Object.keys(
-        sectionToUpdate
-      ) as (keyof typeof sectionToUpdate)[];
+        portfolioSectionToUpdate
+      ) as (keyof typeof portfolioSectionToUpdate)[];
 
-      const [section] = await sql`
-        UPDATE sections
-        SET ${sql(sectionToUpdate, colsToUpdate)}
+      const [portfolioSection] = await sql`
+        UPDATE portfolio_sections
+        SET ${sql(portfolioSectionToUpdate, colsToUpdate)}
         WHERE id = ${id}
         RETURNING id, portfolio_id, is_active, type, created_at, updated_at
       `;
 
-      return success(parsePortfolioSectionFromDB(section as PortfolioSection));
+      return success(
+        parsePortfolioSectionFromDB(portfolioSection as PortfolioSection)
+      );
     } catch (e: any) {
       return failure(getRepositoryError(e));
     }
@@ -62,7 +69,7 @@ export const sectionRepository: PortfolioSectionRepository = {
   delete: async (id) => {
     try {
       await sql`
-            DELETE FROM sections
+            DELETE FROM portfolio_sections
             WHERE id = ${id}
         `;
 

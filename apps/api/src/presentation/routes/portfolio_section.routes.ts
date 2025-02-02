@@ -1,11 +1,11 @@
 import { Router } from "express";
 
-import * as SectionController from "../controllers/portfolio_section.controller";
+import * as PortfolioSectionController from "../controllers/portfolio_section.controller";
 import { validate } from "../middlewares/zod.middleware";
 import {
-  deletePortfolioSectionSchema,
-  patchPortfolioSectionSchema,
   postPortfolioSectionSchema,
+  patchPortfolioSectionSchema,
+  deletePortfolioSectionSchema,
 } from "../validators/schemas/portfolio_section";
 
 const portfolioSectionRoutes = Router();
@@ -13,19 +13,19 @@ const portfolioSectionRoutes = Router();
 portfolioSectionRoutes.post(
   "/portfolio-sections",
   validate(postPortfolioSectionSchema),
-  SectionController.handlePostPortfolioSection
+  PortfolioSectionController.handlePostPortfolioSection
 );
 
 portfolioSectionRoutes.patch(
   "/portfolio-sections/:id",
   validate(patchPortfolioSectionSchema),
-  SectionController.handlePatchPortfolioSection
+  PortfolioSectionController.handlePatchPortfolioSection
 );
 
 portfolioSectionRoutes.delete(
   "/portfolio-sections/:id",
   validate(deletePortfolioSectionSchema),
-  SectionController.handleDeletePortfolioSection
+  PortfolioSectionController.handleDeletePortfolioSection
 );
 
 export default portfolioSectionRoutes;

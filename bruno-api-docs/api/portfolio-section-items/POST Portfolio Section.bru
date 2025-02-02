@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{api_url}}/portfolio-sections
+  url: {{api_url}}/portfolio-section-items
   body: json
   auth: none
 }
@@ -13,7 +13,6 @@ post {
 body:json {
   {
     "portfolio_id": 2,
-    "is_active": true,
-    "type": "education"
+    "portfolio_section_id": 2
   }
 }

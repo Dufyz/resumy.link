@@ -1,11 +1,11 @@
 import { v4 } from "uuid";
 import { portfolioRepository } from "../../../infra/database/repositories/portfolio.repository";
 import { userRepository } from "../../../infra/database/repositories/user.repository";
-import { sectionRepository } from "../../../infra/database/repositories/section.repository";
-import { PortfolioSectionType } from "../../../domain/portfolio/portfolio_sections";
+import { PortfolioSectionType } from "../../../domain/portfolio/portfolio_section";
+import { portfolioSectionRepository } from "../../../infra/database/repositories/portfolio_section.repository";
 
 describe("Portfolio Section repository - Update", () => {
-  it("Should successfully update a section", async () => {
+  it("Should successfully update a portfolio section", async () => {
     const baseUser = {
       name: "User",
       email: `${v4()}@email.com`,
@@ -44,7 +44,7 @@ describe("Portfolio Section repository - Update", () => {
       is_active: true,
     };
 
-    const createdSectionOrError = await sectionRepository.create({
+    const createdSectionOrError = await portfolioSectionRepository.create({
       portfolio_id: baseSection.portfolio_id,
       type: baseSection.type,
       is_active: baseSection.is_active,
@@ -54,7 +54,7 @@ describe("Portfolio Section repository - Update", () => {
       throw new Error(createdSectionOrError.value.message);
     }
 
-    const sectionOrError = await sectionRepository.update(
+    const sectionOrError = await portfolioSectionRepository.update(
       createdSectionOrError.value.id,
       {
         type: "experience" as PortfolioSectionType,

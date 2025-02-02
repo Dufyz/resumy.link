@@ -10,28 +10,30 @@ import {
   deletePortfolioSection,
   updatePortfolioSection,
 } from "../../application/usecases/portfolio/portfolio_section";
-import { sectionRepository } from "../../infra/database/repositories/section.repository";
+import { portfolioSectionRepository } from "../../infra/database/repositories/portfolio_section.repository";
 
 export async function handlePostPortfolioSection(req: Request, res: Response) {
   const { portfolio_id, type, is_active } = req.body as unknown as z.infer<
     typeof postPortfolioSectionSchema
   >["body"];
 
-  const sectionOrError = await createPortfolioSection(sectionRepository)({
+  const portfolioSectionOrError = await createPortfolioSection(
+    portfolioSectionRepository
+  )({
     portfolio_id,
     type,
     is_active,
   });
 
-  if (sectionOrError.isFailure()) {
-    res.status(400).json({ message: sectionOrError.value.message });
+  if (portfolioSectionOrError.isFailure()) {
+    res.status(400).json({ message: portfolioSectionOrError.value.message });
     return;
   }
 
-  const section = sectionOrError.value;
+  const portfolioSection = portfolioSectionOrError.value;
   res.status(201).json({
-    section,
-    message: "Section created",
+    portfolio_section: portfolioSection,
+    message: "Portfolio Section created",
   });
 }
 
@@ -43,20 +45,22 @@ export async function handlePatchPortfolioSection(req: Request, res: Response) {
     typeof patchPortfolioSectionSchema
   >["body"];
 
-  const sectionOrError = await updatePortfolioSection(sectionRepository)(id, {
+  const portfolioSectionOrError = await updatePortfolioSection(
+    portfolioSectionRepository
+  )(id, {
     type,
     is_active,
   });
 
-  if (sectionOrError.isFailure()) {
-    res.status(404).json({ message: sectionOrError.value.message });
+  if (portfolioSectionOrError.isFailure()) {
+    res.status(404).json({ message: portfolioSectionOrError.value.message });
     return;
   }
 
-  const section = sectionOrError.value;
+  const portfolioSection = portfolioSectionOrError.value;
   res.status(200).json({
-    section,
-    message: "Section updated",
+    portfolio_section: portfolioSection,
+    message: "Portfolio Section updated",
   });
 }
 
@@ -68,14 +72,16 @@ export async function handleDeletePortfolioSection(
     typeof deletePortfolioSectionSchema
   >["params"];
 
-  const sectionOrError = await deletePortfolioSection(sectionRepository)(id);
+  const portfolioSectionOrError = await deletePortfolioSection(
+    portfolioSectionRepository
+  )(id);
 
-  if (sectionOrError.isFailure()) {
-    res.status(404).json({ message: sectionOrError.value.message });
+  if (portfolioSectionOrError.isFailure()) {
+    res.status(404).json({ message: portfolioSectionOrError.value.message });
     return;
   }
 
   res.status(200).json({
-    message: "Section deleted",
+    message: "Portfolio Section deleted",
   });
 }

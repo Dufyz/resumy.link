@@ -1,11 +1,11 @@
 import { v4 } from "uuid";
 import { portfolioRepository } from "../../../infra/database/repositories/portfolio.repository";
 import { userRepository } from "../../../infra/database/repositories/user.repository";
-import { sectionRepository } from "../../../infra/database/repositories/section.repository";
-import { PortfolioSectionType } from "../../../domain/portfolio/portfolio_sections";
+import { PortfolioSectionType } from "../../../domain/portfolio/portfolio_section";
+import { portfolioSectionRepository } from "../../../infra/database/repositories/portfolio_section.repository";
 
 describe("Portfolio Section repository - Delete", () => {
-  it("Should successfully delete a section", async () => {
+  it("Should successfully delete a portfolio section", async () => {
     const baseUser = {
       name: "User",
       email: `${v4()}@email.com`,
@@ -44,7 +44,7 @@ describe("Portfolio Section repository - Delete", () => {
       is_active: true,
     };
 
-    const sectionOrError = await sectionRepository.create({
+    const sectionOrError = await portfolioSectionRepository.create({
       portfolio_id: baseSection.portfolio_id,
       type: baseSection.type,
       is_active: baseSection.is_active,
@@ -56,7 +56,7 @@ describe("Portfolio Section repository - Delete", () => {
 
     const section = sectionOrError.value;
 
-    const resultOrError = await sectionRepository.delete(section.id);
+    const resultOrError = await portfolioSectionRepository.delete(section.id);
 
     if (resultOrError.isFailure()) {
       throw new Error(resultOrError.value.message);

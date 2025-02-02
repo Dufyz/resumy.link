@@ -1,4 +1,4 @@
-import { PortfolioSection } from "../../../../domain/portfolio/portfolio_sections";
+import { PortfolioSection } from "../../../../domain/portfolio/portfolio_section";
 import { Either, failure, success } from "../../../../shared/utils/either";
 import { RepositoryErrors } from "../../../errors";
 import { PortfolioSectionRepository } from "../../../interfaces/portfolio_section.repository";

@@ -2,6 +2,7 @@ import { Router } from "express";
 import userRoutes from "./user.routes";
 import portfolioRoutes from "./portfolio.routes";
 import portfolioSectionRoutes from "./portfolio_section.routes";
+import portfolioSectionItemsRoutes from "./portfolio_section_item.routes";
 
 const routes = Router();
 const apiRoutes = Router();
@@ -13,6 +14,7 @@ apiRoutes.get("/health-check", (_, res) => {
 apiRoutes.use(userRoutes);
 apiRoutes.use(portfolioRoutes);
 apiRoutes.use(portfolioSectionRoutes);
+apiRoutes.use(portfolioSectionItemsRoutes);
 
 routes.use("/api", apiRoutes);
 

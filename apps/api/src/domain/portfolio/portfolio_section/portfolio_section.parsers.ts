@@ -1,4 +1,4 @@
-import { PortfolioSection } from "./portfolio_sections.entities";
+import { PortfolioSection } from "./portfolio_section.entities";
 
 export const parsePortfolioSectionFromDB = (
   section: PortfolioSection
