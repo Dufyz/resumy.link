@@ -45,7 +45,7 @@ const planos = [
 
 export default function SecaoDePrecos() {
   return (
-    <section id="precos" className="py-20 px-4 bg-gray-50">
+    <section className="py-20 px-4 bg-gray-50" id="pricing">
       <div className="max-w-7xl mx-auto flex flex-col gap-16">
         <div className="flex flex-col items-center gap-4">
           <h2 className="text-4xl font-bold">Preços simples e transparentes</h2>

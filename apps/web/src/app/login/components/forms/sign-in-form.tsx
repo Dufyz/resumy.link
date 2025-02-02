@@ -37,7 +37,11 @@ export function SignInForm() {
       await signIn(email, password);
 
       router.push("/admin");
-    } catch {
+    } catch (e: any) {
+      if (e?.message === "Invalid login credentials") {
+        return form.setError("root", { message: "Email ou senha inválidas" });
+      }
+
       form.setError("root", { message: "Ocorreu um erro ao fazer login" });
     } finally {
       setIsLoading(false);

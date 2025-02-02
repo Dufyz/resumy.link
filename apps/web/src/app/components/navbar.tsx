@@ -65,9 +65,9 @@ export default function Navbar() {
 
 function NavLinks({ mobile = false }: { mobile?: boolean }) {
   const links = [
-    { href: "#", label: "Funcionalidades" },
+    { href: "#features", label: "Funcionalidades" },
     { href: "#pricing", label: "Preços" },
-    { href: "#", label: "Sobre" },
+    { href: "#about", label: "Sobre" },
   ];
 
   return (

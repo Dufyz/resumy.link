@@ -66,9 +66,7 @@ export function ForgotPasswordForm() {
           )}
         />
         {success ? (
-          <p className="text-green-500">
-            Email de recuperação enviado. Verifique sua caixa de entrada.
-          </p>
+          <p className="text-green-700">Email de recuperação enviado.</p>
         ) : (
           form.formState.errors.root && (
             <p className="text-red-500">{form.formState.errors.root.message}</p>

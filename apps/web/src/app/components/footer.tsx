@@ -26,7 +26,7 @@ const footerLinks = {
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-50 py-12 px-4 border-t">
+    <footer className="bg-gray-50 py-12 px-4 border-t" id="about">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row gap-12 mb-12">
           <div className="flex flex-col gap-4">
