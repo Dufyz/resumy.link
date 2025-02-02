@@ -2,7 +2,7 @@ import type { Knex } from "knex";
 
 export async function up(knex: Knex): Promise<void> {
   return knex.raw(`
-        CREATE TABLE sections (
+        CREATE TABLE portfolio_sections (
             id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
             portfolio_id BIGINT NOT NULL REFERENCES portfolios(id),
             is_active BOOLEAN DEFAULT TRUE,
@@ -15,6 +15,6 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
   return knex.raw(`
-        DROP TABLE IF EXISTS sections;
+        DROP TABLE IF EXISTS portfolio_sections;
     `);
 }

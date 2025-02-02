@@ -2,9 +2,9 @@ import { v4 } from "uuid";
 import { portfolioRepository } from "../../../infra/database/repositories/portfolio.repository";
 import { userRepository } from "../../../infra/database/repositories/user.repository";
 import { sectionRepository } from "../../../infra/database/repositories/section.repository";
-import { SectionType } from "../../../domain/section";
+import { PortfolioSectionType } from "../../../domain/portfolio/portfolio_sections";
 
-describe("Section repository - Update", () => {
+describe("Portfolio Section repository - Update", () => {
   it("Should successfully update a section", async () => {
     const baseUser = {
       name: "User",
@@ -40,7 +40,7 @@ describe("Section repository - Update", () => {
 
     const baseSection = {
       portfolio_id: portfolio.id,
-      type: "education" as SectionType,
+      type: "education" as PortfolioSectionType,
       is_active: true,
     };
 
@@ -57,7 +57,7 @@ describe("Section repository - Update", () => {
     const sectionOrError = await sectionRepository.update(
       createdSectionOrError.value.id,
       {
-        type: "experience" as SectionType,
+        type: "experience" as PortfolioSectionType,
         is_active: false,
       }
     );

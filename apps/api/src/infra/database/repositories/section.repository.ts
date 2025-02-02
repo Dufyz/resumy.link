@@ -1,15 +1,18 @@
 import { getRepositoryError } from "../../../application/errors";
-import { SectionRepository } from "../../../application/interfaces/section.repository";
-import { parseSectionFromDB, Section } from "../../../domain/section";
+import { PortfolioSectionRepository } from "../../../application/interfaces/portfolio_section.repository";
+import {
+  parsePortfolioSectionFromDB,
+  PortfolioSection,
+} from "../../../domain/portfolio/portfolio_sections";
 import { failure, success } from "../../../shared/utils/either";
 import { filterObjNullishValues } from "../../../shared/utils/filterObjNullishValues";
 import sql from "../postgresql";
 
-export const sectionRepository: SectionRepository = {
+export const sectionRepository: PortfolioSectionRepository = {
   create: async (body) => {
     try {
       const sectionToCreate: Pick<
-        Section,
+        PortfolioSection,
         "portfolio_id" | "type" | "is_active"
       > = {
         portfolio_id: body.portfolio_id,
@@ -26,18 +29,19 @@ export const sectionRepository: SectionRepository = {
         RETURNING id, portfolio_id, is_active, type, created_at, updated_at
       `;
 
-      return success(parseSectionFromDB(section as Section));
+      return success(parsePortfolioSectionFromDB(section as PortfolioSection));
     } catch (e: any) {
       return failure(getRepositoryError(e));
     }
   },
   update: async (id, body) => {
     try {
-      const sectionToUpdate: Partial<Pick<Section, "type" | "is_active">> =
-        filterObjNullishValues({
-          type: body.type,
-          is_active: body.is_active,
-        });
+      const sectionToUpdate: Partial<
+        Pick<PortfolioSection, "type" | "is_active">
+      > = filterObjNullishValues({
+        type: body.type,
+        is_active: body.is_active,
+      });
 
       const colsToUpdate = Object.keys(
         sectionToUpdate
@@ -50,7 +54,7 @@ export const sectionRepository: SectionRepository = {
         RETURNING id, portfolio_id, is_active, type, created_at, updated_at
       `;
 
-      return success(parseSectionFromDB(section as Section));
+      return success(parsePortfolioSectionFromDB(section as PortfolioSection));
     } catch (e: any) {
       return failure(getRepositoryError(e));
     }

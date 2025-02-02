@@ -2,10 +2,10 @@ import { v4 } from "uuid";
 import { portfolioRepository } from "../../../infra/database/repositories/portfolio.repository";
 import { userRepository } from "../../../infra/database/repositories/user.repository";
 import { sectionRepository } from "../../../infra/database/repositories/section.repository";
-import { SectionType } from "../../../domain/section";
+import { PortfolioSectionType } from "../../../domain/portfolio/portfolio_sections";
 
-describe("Section repository - Create", () => {
-  it("Should successfully create a section", async () => {
+describe("Portfolio Section repository - Delete", () => {
+  it("Should successfully delete a section", async () => {
     const baseUser = {
       name: "User",
       email: `${v4()}@email.com`,
@@ -40,7 +40,7 @@ describe("Section repository - Create", () => {
 
     const baseSection = {
       portfolio_id: portfolio.id,
-      type: "education" as SectionType,
+      type: "education" as PortfolioSectionType,
       is_active: true,
     };
 
@@ -55,13 +55,14 @@ describe("Section repository - Create", () => {
     }
 
     const section = sectionOrError.value;
-    expect(section).toEqual({
-      id: expect.any(String),
-      portfolio_id: baseSection.portfolio_id,
-      is_active: baseSection.is_active,
-      type: baseSection.type,
-      created_at: expect.any(Date),
-      updated_at: expect.any(Date),
-    });
+
+    const resultOrError = await sectionRepository.delete(section.id);
+
+    if (resultOrError.isFailure()) {
+      throw new Error(resultOrError.value.message);
+    }
+
+    const result = resultOrError.value;
+    expect(result).toEqual(undefined);
   });
 });

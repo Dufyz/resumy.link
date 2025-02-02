@@ -1,4 +1,4 @@
-export type SectionType =
+export type PortfolioSectionType =
   | "education"
   | "experience"
   | "project"
@@ -6,11 +6,11 @@ export type SectionType =
   | "language"
   | "social";
 
-export type Section = {
+export type PortfolioSection = {
   id: number;
   portfolio_id: number;
   is_active: boolean;
-  type: SectionType;
+  type: PortfolioSectionType;
   created_at: Date;
   updated_at: Date;
 };

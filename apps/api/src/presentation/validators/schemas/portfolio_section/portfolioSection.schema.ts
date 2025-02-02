@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const sectionSchema = z.object({
+export const portfolioSectionSchema = z.object({
   id: z.number(),
   portfolio_id: z.number(),
   is_active: z.boolean(),

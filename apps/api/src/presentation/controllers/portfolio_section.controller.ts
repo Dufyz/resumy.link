@@ -1,23 +1,23 @@
 import z from "zod";
 import { Request, Response } from "express";
 import {
-  deleteSectionSchema,
-  patchSectionSchema,
-  postSectionSchema,
-} from "../validators/schemas/section";
+  deletePortfolioSectionSchema,
+  patchPortfolioSectionSchema,
+  postPortfolioSectionSchema,
+} from "../validators/schemas/portfolio_section";
 import {
-  createSection,
-  deleteSection,
-  updateSection,
-} from "../../application/usecases/section";
+  createPortfolioSection,
+  deletePortfolioSection,
+  updatePortfolioSection,
+} from "../../application/usecases/portfolio/portfolio_section";
 import { sectionRepository } from "../../infra/database/repositories/section.repository";
 
-export async function handlePostSection(req: Request, res: Response) {
+export async function handlePostPortfolioSection(req: Request, res: Response) {
   const { portfolio_id, type, is_active } = req.body as unknown as z.infer<
-    typeof postSectionSchema
+    typeof postPortfolioSectionSchema
   >["body"];
 
-  const sectionOrError = await createSection(sectionRepository)({
+  const sectionOrError = await createPortfolioSection(sectionRepository)({
     portfolio_id,
     type,
     is_active,
@@ -35,15 +35,15 @@ export async function handlePostSection(req: Request, res: Response) {
   });
 }
 
-export async function handlePatchSection(req: Request, res: Response) {
+export async function handlePatchPortfolioSection(req: Request, res: Response) {
   const { id } = req.params as unknown as z.infer<
-    typeof patchSectionSchema
+    typeof patchPortfolioSectionSchema
   >["params"];
   const { type, is_active } = req.body as unknown as z.infer<
-    typeof patchSectionSchema
+    typeof patchPortfolioSectionSchema
   >["body"];
 
-  const sectionOrError = await updateSection(sectionRepository)(id, {
+  const sectionOrError = await updatePortfolioSection(sectionRepository)(id, {
     type,
     is_active,
   });
@@ -60,12 +60,15 @@ export async function handlePatchSection(req: Request, res: Response) {
   });
 }
 
-export async function handleDeleteSection(req: Request, res: Response) {
+export async function handleDeletePortfolioSection(
+  req: Request,
+  res: Response
+) {
   const { id } = req.params as unknown as z.infer<
-    typeof deleteSectionSchema
+    typeof deletePortfolioSectionSchema
   >["params"];
 
-  const sectionOrError = await deleteSection(sectionRepository)(id);
+  const sectionOrError = await deletePortfolioSection(sectionRepository)(id);
 
   if (sectionOrError.isFailure()) {
     res.status(404).json({ message: sectionOrError.value.message });
