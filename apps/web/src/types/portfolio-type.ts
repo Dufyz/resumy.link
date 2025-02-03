@@ -1,12 +1,14 @@
+import { PortfolioSection } from "./portfolio-section-type";
+
 export type Portfolio = {
   id: number;
   user_id: number;
   username: string;
-  name: string;
+  title: string;
   bio: string | null;
   avatar_path: string | null;
   created_at: Date;
   updated_at: Date;
-};
 
-export type PortfolioSocial = {};
+  portfolio_sections?: PortfolioSection[];
+};

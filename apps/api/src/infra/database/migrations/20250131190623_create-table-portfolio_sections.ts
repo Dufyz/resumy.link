@@ -7,6 +7,7 @@ export async function up(knex: Knex): Promise<void> {
             portfolio_id BIGINT NOT NULL REFERENCES portfolios(id),
             is_active BOOLEAN DEFAULT TRUE,
             type VARCHAR(255) NOT NULL,
+            title VARCHAR(255) NOT NULL,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW()
         );    

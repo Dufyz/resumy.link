@@ -1,12 +1,16 @@
-import type { SectionItem } from "@/types";
 import { Switch } from "@/components/ui/switch";
 import { GripVertical, Link2, Trash2 } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { PortfolioSectionItem as PortfolioSectionItemType } from "@/types/portfolio-section-type";
 
-export function SectionItem({ sectionItem }: { sectionItem: SectionItem }) {
+export function PortfolioSectionItem({
+  portfolioSectionItem,
+}: {
+  portfolioSectionItem: PortfolioSectionItemType;
+}) {
   const {
     attributes,
     listeners,
@@ -14,7 +18,7 @@ export function SectionItem({ sectionItem }: { sectionItem: SectionItem }) {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: sectionItem.id });
+  } = useSortable({ id: portfolioSectionItem.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -58,7 +62,7 @@ export function SectionItem({ sectionItem }: { sectionItem: SectionItem }) {
       className={cn(
         "group flex items-center justify-between rounded-lg border bg-card p-4",
         isDragging && "opacity-50",
-        !sectionItem.isActive && "opacity-50"
+        !portfolioSectionItem.is_active && "opacity-50"
       )}
     >
       <div className="flex items-center gap-3">
@@ -71,16 +75,16 @@ export function SectionItem({ sectionItem }: { sectionItem: SectionItem }) {
         </button>
         <div>
           <div className="flex items-center gap-2">
-            <span className="font-medium">{sectionItem.title}</span>
+            <span className="font-medium">{portfolioSectionItem.title}</span>
             <Link2 className="h-3 w-3 text-muted-foreground" />
           </div>
           <a
-            href={sectionItem.url}
+            href={portfolioSectionItem.url}
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-muted-foreground hover:underline"
           >
-            {sectionItem.url}
+            {portfolioSectionItem.url}
           </a>
         </div>
       </div>
@@ -89,7 +93,10 @@ export function SectionItem({ sectionItem }: { sectionItem: SectionItem }) {
           <Trash2 className="h-4 w-4 text-destructive" />
         </Button>
 
-        <Switch checked={sectionItem.isActive} onCheckedChange={onToggle} />
+        <Switch
+          checked={portfolioSectionItem.is_active}
+          onCheckedChange={onToggle}
+        />
       </div>
     </div>
   );

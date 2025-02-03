@@ -13,9 +13,8 @@ import {
 import { portfolioSectionRepository } from "../../infra/database/repositories/portfolio_section.repository";
 
 export async function handlePostPortfolioSection(req: Request, res: Response) {
-  const { portfolio_id, type, is_active } = req.body as unknown as z.infer<
-    typeof postPortfolioSectionSchema
-  >["body"];
+  const { portfolio_id, type, is_active, title } =
+    req.body as unknown as z.infer<typeof postPortfolioSectionSchema>["body"];
 
   const portfolioSectionOrError = await createPortfolioSection(
     portfolioSectionRepository
@@ -23,6 +22,7 @@ export async function handlePostPortfolioSection(req: Request, res: Response) {
     portfolio_id,
     type,
     is_active,
+    title,
   });
 
   if (portfolioSectionOrError.isFailure()) {
@@ -41,7 +41,7 @@ export async function handlePatchPortfolioSection(req: Request, res: Response) {
   const { id } = req.params as unknown as z.infer<
     typeof patchPortfolioSectionSchema
   >["params"];
-  const { type, is_active } = req.body as unknown as z.infer<
+  const { type, is_active, title } = req.body as unknown as z.infer<
     typeof patchPortfolioSectionSchema
   >["body"];
 
@@ -50,6 +50,7 @@ export async function handlePatchPortfolioSection(req: Request, res: Response) {
   )(id, {
     type,
     is_active,
+    title,
   });
 
   if (portfolioSectionOrError.isFailure()) {

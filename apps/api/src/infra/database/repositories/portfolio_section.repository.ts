@@ -13,11 +13,12 @@ export const portfolioSectionRepository: PortfolioSectionRepository = {
     try {
       const portfolioSectionToCreate: Pick<
         PortfolioSection,
-        "portfolio_id" | "type" | "is_active"
+        "portfolio_id" | "type" | "is_active" | "title"
       > = {
         portfolio_id: body.portfolio_id,
         is_active: body.is_active,
         type: body.type,
+        title: body.title,
       };
 
       const colsToInsert = Object.keys(
@@ -29,7 +30,7 @@ export const portfolioSectionRepository: PortfolioSectionRepository = {
           portfolioSectionToCreate,
           colsToInsert
         )}
-        RETURNING id, portfolio_id, is_active, type, created_at, updated_at
+        RETURNING id, portfolio_id, is_active, type, title, created_at, updated_at
       `;
 
       return success(
@@ -42,10 +43,12 @@ export const portfolioSectionRepository: PortfolioSectionRepository = {
   update: async (id, body) => {
     try {
       const portfolioSectionToUpdate: Partial<
-        Pick<PortfolioSection, "type" | "is_active">
+        Pick<PortfolioSection, "type" | "is_active" | "title" | "updated_at">
       > = filterObjNullishValues({
         type: body.type,
         is_active: body.is_active,
+        title: body.title,
+        updated_at: new Date(),
       });
 
       const colsToUpdate = Object.keys(
@@ -56,7 +59,7 @@ export const portfolioSectionRepository: PortfolioSectionRepository = {
         UPDATE portfolio_sections
         SET ${sql(portfolioSectionToUpdate, colsToUpdate)}
         WHERE id = ${id}
-        RETURNING id, portfolio_id, is_active, type, created_at, updated_at
+        RETURNING id, portfolio_id, is_active, type, title, created_at, updated_at
       `;
 
       return success(

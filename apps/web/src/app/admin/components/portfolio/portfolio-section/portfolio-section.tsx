@@ -3,38 +3,55 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { GripVertical, LayoutGrid, Trash2 } from "lucide-react";
+import { LayoutGrid, Trash2 } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { AnimatePresence, motion } from "framer-motion";
-import { SectionItem } from "./section-item/section-item";
+import { PortfolioSectionItem } from "./portfolio-section-item/portoflio-section-item";
 import { cn } from "@/lib/utils";
-import { CreateSectionItem } from "./section-item/create-section-item";
-import { Section as SectionType } from "@/types/section-type";
+import { CreatePortfolioSectionItem } from "./portfolio-section-item/create-portfolio-section-item";
+import { PortfolioSection as PortfolioSectionType } from "@/types/portfolio-section-type";
+import { usePortfolioStore } from "@/stores/portfolio-store";
+import {
+  patchPortfolioSection,
+  deletePortfolioSection as deletePortfolioSectionQuery,
+} from "@/queries/portfolio-section-queries";
 
-export function Section({
-  section,
+export function PortfolioSection({
+  portfolioSection,
   dragId,
 }: {
-  section: SectionType;
+  portfolioSection: PortfolioSectionType;
   dragId: string;
 }) {
   const [isDragging, setIsDragging] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: dragId });
 
-  const toggleCollection = (id: string) => {
-    // setSections((prev) =>
-    //   prev.map((collection) =>
-    //     collection.id === id
-    //       ? { ...collection, isActive: !collection.isActive }
-    //       : collection
-    //   )
-    // );
+  const updatePortfolioSection = usePortfolioStore(
+    (state) => state.updatePortfolioSection
+  );
+
+  const deletePortfolioSection = usePortfolioStore(
+    (state) => state.deletePortfolioSection
+  );
+
+  const toggleCollection = () => {
+    const isActive = !portfolioSection.is_active;
+
+    updatePortfolioSection(portfolioSection.id, {
+      is_active: isActive,
+    });
+
+    patchPortfolioSection(portfolioSection.id, {
+      is_active: isActive,
+    });
   };
 
-  const deleteCollection = (id: string) => {
-    // setSections((prev) => prev.filter((collection) => collection.id !== id));
+  const deleteCollection = () => {
+    deletePortfolioSection(portfolioSection.id);
+
+    deletePortfolioSectionQuery(portfolioSection.id);
   };
 
   return (
@@ -60,7 +77,8 @@ export function Section({
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button
+            {/* TODO: Button quebra tudo */}
+            {/* <button
               {...attributes}
               {...listeners}
               className="cursor-grab touch-none active:cursor-grabbing"
@@ -68,12 +86,12 @@ export function Section({
               onMouseUp={() => setIsDragging(false)}
             >
               <GripVertical className="h-5 w-5 text-muted-foreground" />
-            </button>
+            </button> */}
             <div className="flex items-center gap-2">
               <LayoutGrid className="h-5 w-5 text-primary" />
-              <h3 className="font-semibold">{section.title}</h3>
+              <h3 className="font-semibold">{portfolioSection.title}</h3>
               <span className="text-sm text-muted-foreground">
-                {section.links.length} itens
+                {portfolioSection.portfolio_section_items?.length} itens
               </span>
             </div>
           </div>
@@ -82,7 +100,7 @@ export function Section({
               <Trash2 className="h-4 w-4 text-destructive" />
             </Button>
             <Switch
-              checked={section.isActive}
+              checked={portfolioSection.is_active}
               onCheckedChange={toggleCollection}
             />
           </div>
@@ -90,22 +108,26 @@ export function Section({
 
         <AnimatePresence>
           <div className="flex flex-col gap-3">
-            {section.links.map((link) => (
-              <motion.div
-                key={link.id}
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.2 }}
-              >
-                <SectionItem sectionItem={link} />
-              </motion.div>
-            ))}
+            {portfolioSection.portfolio_section_items?.map(
+              (portfolioSection) => (
+                <motion.div
+                  key={portfolioSection.id}
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <PortfolioSectionItem
+                    portfolioSectionItem={portfolioSection}
+                  />
+                </motion.div>
+              )
+            )}
           </div>
         </AnimatePresence>
 
-        <CreateSectionItem />
+        <CreatePortfolioSectionItem />
       </div>
     </motion.div>
   );

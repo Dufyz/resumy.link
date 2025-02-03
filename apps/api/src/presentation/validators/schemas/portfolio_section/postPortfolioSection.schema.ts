@@ -6,5 +6,6 @@ export const postPortfolioSectionSchema = z.object({
     portfolio_id: true,
     type: true,
     is_active: true,
+    title: true,
   }),
 });

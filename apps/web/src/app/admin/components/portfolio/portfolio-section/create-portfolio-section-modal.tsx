@@ -22,28 +22,43 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Folder } from "lucide-react";
 import {
-  CreateSectionSchema,
-  createSectionSchema,
-} from "../../schemas/section-schema";
-import { SectionTypeData } from "../../data/section-type-data";
-import { SectionType } from "@/types/section-type";
+  CreatePortfolioSectionSchema,
+  createPortfolioSectionSchema,
+} from "../../../../../schemas/portfolio-section-schema";
+import { SectionTypeData } from "../../../data/section-type-data";
+import { PortfolioSectionType } from "@/types/portfolio-section-type";
+import { Portfolio } from "@/types/portfolio-type";
+import { usePortfolioStore } from "@/stores/portfolio-store";
+import { postPortfolioSection } from "@/queries/portfolio-section-queries";
 
-export function CreateSectionModal() {
+export function CreatePortfolioSectionModal({
+  portfolio,
+}: {
+  portfolio: Portfolio;
+}) {
   const [open, setOpen] = useState(false);
 
-  const form = useForm<CreateSectionSchema>({
-    resolver: zodResolver(createSectionSchema),
+  const createPortfolioSection = usePortfolioStore(
+    (state) => state.createPortfolioSection
+  );
+
+  const form = useForm<CreatePortfolioSectionSchema>({
+    resolver: zodResolver(createPortfolioSectionSchema),
     defaultValues: {
-      portfolio_id: 1,
+      portfolio_id: portfolio.id,
       is_active: true,
-      title: "",
-      type: "custom",
+      title: "Educação",
+      type: "education",
     },
   });
 
-  const handleAdd = (data: CreateSectionSchema) => {
+  async function onSubmit(data: CreatePortfolioSectionSchema) {
+    const { portfolio_section } = await postPortfolioSection(data);
+
+    createPortfolioSection(portfolio_section);
     setOpen(false);
-  };
+    form.reset();
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -58,7 +73,7 @@ export function CreateSectionModal() {
           <DialogTitle>Adicionar nova seção</DialogTitle>
         </DialogHeader>
         <form
-          onSubmit={form.handleSubmit(handleAdd)}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4"
         >
           <div className="flex flex-col gap-2">
@@ -69,6 +84,7 @@ export function CreateSectionModal() {
               id="sectionTitle"
               {...form.register("title")}
               placeholder="ex: Mídias Sociais, Projetos, Contato"
+              disabled
             />
             {form.formState.errors.title && (
               <p className="text-red-500 text-sm">
@@ -85,7 +101,10 @@ export function CreateSectionModal() {
                 );
                 if (selectedType) {
                   form.setValue("title", selectedType.label);
-                  form.setValue("type", selectedType.value as SectionType);
+                  form.setValue(
+                    "type",
+                    selectedType.value as PortfolioSectionType
+                  );
                 }
               }}
               value={form.watch("type")}

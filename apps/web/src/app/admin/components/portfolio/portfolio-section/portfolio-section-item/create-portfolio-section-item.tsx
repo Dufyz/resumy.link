@@ -12,37 +12,46 @@ import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  CreateSectionItemSchema,
-  createSectionItemSchema,
-} from "@/app/admin/schemas/section-item-scheam";
+  CreatePortfolioSectionItemSchema,
+  createPortfolioSectionItemSchema,
+} from "@/schemas/portfolio-section-item-schema";
+import { usePortfolioStore } from "@/stores/portfolio-store";
+import { postPortfolioSectionItem } from "@/queries/portfolio-section-item-queries";
 
-export function CreateSectionItem() {
+export function CreatePortfolioSectionItem() {
   const [open, setOpen] = useState(false);
 
-  const form = useForm<CreateSectionItemSchema>({
-    resolver: zodResolver(createSectionItemSchema),
+  const createPortfolioSectionItem = usePortfolioStore(
+    (state) => state.createPortfolioSectionItem
+  );
+
+  const form = useForm<CreatePortfolioSectionItemSchema>({
+    resolver: zodResolver(createPortfolioSectionItemSchema),
     defaultValues: {},
   });
 
-  const handleAdd = (data: CreateSectionItemSchema) => {
-    form.reset();
+  async function onSubmit(data: CreatePortfolioSectionItemSchema) {
+    const { portfolio_section_item } = await postPortfolioSectionItem(data);
+
+    createPortfolioSectionItem(portfolio_section_item);
     setOpen(false);
-  };
+    form.reset();
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger className="w-full">
         <Button variant="outline" className="w-full flex items-center gap-2">
           <Plus className="h-4 w-4" />
-          Adicionar link
+          Adicionar item
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Adicionar novo link</DialogTitle>
+          <DialogTitle>Adicionar novo item</DialogTitle>
         </DialogHeader>
         <form
-          onSubmit={form.handleSubmit(handleAdd)}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4"
         >
           <div className="flex flex-col gap-2">

@@ -6,12 +6,16 @@ import { PortfolioSectionRepository } from "../../../interfaces/portfolio_sectio
 export const createPortfolioSection =
   (portfolioSectionRepository: PortfolioSectionRepository) =>
   async (
-    body: Pick<PortfolioSection, "portfolio_id" | "type" | "is_active">
+    body: Pick<
+      PortfolioSection,
+      "portfolio_id" | "type" | "is_active" | "title"
+    >
   ): Promise<Either<RepositoryErrors, PortfolioSection>> => {
     const portfolioSectionOrError = await portfolioSectionRepository.create({
       portfolio_id: body.portfolio_id,
       type: body.type,
       is_active: body.is_active,
+      title: body.title,
     });
 
     if (portfolioSectionOrError.isFailure())

@@ -4,11 +4,14 @@ import { RepositoryErrors } from "../errors";
 
 export type PortfolioSectionRepository = {
   create(
-    body: Pick<PortfolioSection, "portfolio_id" | "type" | "is_active">
+    body: Pick<
+      PortfolioSection,
+      "portfolio_id" | "type" | "is_active" | "title"
+    >
   ): Promise<Either<RepositoryErrors, PortfolioSection>>;
   update(
     id: number,
-    body: Partial<Pick<PortfolioSection, "type" | "is_active">>
+    body: Partial<Pick<PortfolioSection, "type" | "is_active" | "title">>
   ): Promise<Either<RepositoryErrors, PortfolioSection>>;
   delete(id: number): Promise<Either<RepositoryErrors, void>>;
 };

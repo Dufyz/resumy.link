@@ -48,12 +48,14 @@ describe("Portfolio Section repository - Delete", () => {
       portfolio_id: portfolio.id,
       type: "education" as PortfolioSectionType,
       is_active: true,
+      title: "title",
     };
 
     const sectionOrError = await portfolioSectionRepository.create({
       portfolio_id: baseSection.portfolio_id,
       type: baseSection.type,
       is_active: baseSection.is_active,
+      title: baseSection.title,
     });
 
     if (sectionOrError.isFailure()) {

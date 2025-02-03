@@ -47,12 +47,14 @@ describe("Portfolio Section repository - Create", () => {
       portfolio_id: portfolio.id,
       type: "education" as PortfolioSectionType,
       is_active: true,
+      title: "title",
     };
 
     const sectionOrError = await portfolioSectionRepository.create({
       portfolio_id: baseSection.portfolio_id,
       type: baseSection.type,
       is_active: baseSection.is_active,
+      title: baseSection.title,
     });
 
     if (sectionOrError.isFailure()) {
@@ -65,6 +67,7 @@ describe("Portfolio Section repository - Create", () => {
       portfolio_id: baseSection.portfolio_id,
       is_active: baseSection.is_active,
       type: baseSection.type,
+      title: baseSection.title,
       created_at: expect.any(Date),
       updated_at: expect.any(Date),
     });

@@ -14,40 +14,36 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Portfolio } from "@/types/portfolio-type";
 import {
-  EditPortfolioSchema,
-  editPortfolioSchema,
-} from "../../schemas/portfolio-schema";
+  UpdatePortfolioSchema,
+  updatePortfolioSchema,
+} from "../../../../schemas/portfolio-schema";
+import { patchPortfolio } from "@/queries/portfolio-queries";
+import { usePortfolioStore } from "@/stores/portfolio-store";
 
-const portfolio: Portfolio = {
-  id: 1,
-  user_id: 1,
-  name: "Guilherme Iago Schmidt Thomaz",
-  username: "dufyz",
-  bio: "Engenheiro de software",
-  avatar_path: null,
-  created_at: new Date(),
-  updated_at: new Date(),
-};
-
-export function EditPortfolioModal() {
+export function UpdatePortfolioModal({ portfolio }: { portfolio: Portfolio }) {
   const [open, setOpen] = useState(false);
 
-  const form = useForm<EditPortfolioSchema>({
-    resolver: zodResolver(editPortfolioSchema),
-    values: {
-      name: portfolio.name,
+  const updatePortfolio = usePortfolioStore((state) => state.updatePortfolio);
+
+  const form = useForm<UpdatePortfolioSchema>({
+    resolver: zodResolver(updatePortfolioSchema),
+    defaultValues: {
+      title: portfolio.title,
+      username: portfolio.username,
       bio: portfolio.bio,
       avatar_path: portfolio.avatar_path,
     },
   });
 
-  const onSubmit = (data: EditPortfolioSchema) => {
-    setOpen(false);
-  };
+  async function onSubmit(data: UpdatePortfolioSchema) {
+    const { portfolio: response } = await patchPortfolio(portfolio.id, data);
+
+    updatePortfolio(response);
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <Edit2 className="mr-2 h-4 w-4" />
           Editar
@@ -64,12 +60,12 @@ export function EditPortfolioModal() {
             </label>
             <Input
               id="profileTitle"
-              {...form.register("name")}
+              {...form.register("title")}
               placeholder="Digite seu nome"
             />
-            {form.formState.errors.name && (
+            {form.formState.errors.title && (
               <p className="text-sm text-red-500">
-                {form.formState.errors.name.message}
+                {form.formState.errors.title?.message}
               </p>
             )}
           </div>
@@ -84,6 +80,11 @@ export function EditPortfolioModal() {
               className="resize-none"
               maxLength={80}
             />
+            {form.formState.errors.bio && (
+              <p className="text-sm text-red-500">
+                {form.formState.errors.bio?.message}
+              </p>
+            )}
           </div>
           <Button
             type="submit"
