@@ -24,12 +24,18 @@ describe("Portfolio Section repository - Delete", () => {
 
     const basePortfolio = {
       user_id: user.id,
-      name: `portfolio-${v4()}`,
+      username: `portfolio-${v4()}`,
+      title: "title",
+      bio: null,
+      avatar_path: null,
     };
 
     const portfolioOrError = await portfolioRepository.create({
       user_id: basePortfolio.user_id,
-      name: basePortfolio.name,
+      username: basePortfolio.username,
+      title: basePortfolio.title,
+      bio: basePortfolio.bio,
+      avatar_path: basePortfolio.avatar_path,
     });
 
     if (portfolioOrError.isFailure()) {

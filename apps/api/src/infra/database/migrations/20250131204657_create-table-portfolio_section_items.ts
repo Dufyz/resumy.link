@@ -6,6 +6,7 @@ export async function up(knex: Knex): Promise<void> {
             id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             portfolio_id BIGINT NOT NULL REFERENCES portfolios(id),
             portfolio_section_id BIGINT NOT NULL REFERENCES portfolio_sections(id),
+            is_active BOOLEAN DEFAULT FALSE,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW()
         );

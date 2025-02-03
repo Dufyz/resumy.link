@@ -5,5 +5,11 @@ export const patchPortfolioSchema = z.object({
   params: z.object({
     id: z.coerce.number(),
   }),
-  body: portfolioSchema.pick({ name: true }).partial(),
+  body: portfolioSchema
+    .pick({
+      title: true,
+      bio: true,
+      avatar_path: true,
+    })
+    .partial(),
 });

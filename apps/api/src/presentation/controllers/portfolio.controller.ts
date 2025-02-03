@@ -3,13 +3,13 @@ import { Request, Response } from "express";
 import {
   createPortfolio,
   findPortfolioById,
-  findPortfolioByName,
+  findPortfolioByUserame,
   updatePortfolio,
 } from "../../application/usecases/portfolio";
 import { portfolioRepository } from "../../infra/database/repositories/portfolio.repository";
 import {
   getPortfolioByIdSchema,
-  getPortfolioByNameSchema,
+  getPortfolioByUsernameSchema,
   patchPortfolioSchema,
   postPortfolioSchema,
 } from "../validators/schemas/portfolio";
@@ -39,12 +39,17 @@ export async function handleGetPortfolioById(req: Request, res: Response) {
   });
 }
 
-export async function handleGetPortfolioByName(req: Request, res: Response) {
-  const { name } = req.params as unknown as z.infer<
-    typeof getPortfolioByNameSchema
+export async function handleGetPortfolioByUsername(
+  req: Request,
+  res: Response
+) {
+  const { username } = req.params as unknown as z.infer<
+    typeof getPortfolioByUsernameSchema
   >["params"];
 
-  const portfolioOrError = await findPortfolioByName(portfolioRepository)(name);
+  const portfolioOrError = await findPortfolioByUserame(portfolioRepository)(
+    username
+  );
 
   if (portfolioOrError.isFailure()) {
     res.status(404).json({ message: portfolioOrError.value.message });
@@ -65,13 +70,15 @@ export async function handleGetPortfolioByName(req: Request, res: Response) {
 }
 
 export async function handlePostPortfolio(req: Request, res: Response) {
-  const { name, user_id } = req.body as unknown as z.infer<
-    typeof postPortfolioSchema
-  >["body"];
+  const { user_id, username, title, bio, avatar_path } =
+    req.body as unknown as z.infer<typeof postPortfolioSchema>["body"];
 
   const portfolioOrError = await createPortfolio(portfolioRepository)({
     user_id,
-    name,
+    username,
+    title,
+    bio,
+    avatar_path,
   });
 
   if (portfolioOrError.isFailure()) {
@@ -90,12 +97,14 @@ export async function handlePatchPortfolio(req: Request, res: Response) {
   const { id } = req.params as unknown as z.infer<
     typeof patchPortfolioSchema
   >["params"];
-  const { name } = req.body as unknown as z.infer<
+  const { title, bio, avatar_path } = req.body as unknown as z.infer<
     typeof patchPortfolioSchema
   >["body"];
 
   const portfolioOrError = await updatePortfolio(portfolioRepository)(id, {
-    name,
+    title,
+    bio,
+    avatar_path,
   });
 
   if (portfolioOrError.isFailure()) {

@@ -7,10 +7,12 @@ export const updatePortfolio =
   (portfolioRepository: PortfolioRepository) =>
   async (
     id: number,
-    body: Partial<Pick<Portfolio, "name">>
+    body: Partial<Pick<Portfolio, "title" | "bio" | "avatar_path">>
   ): Promise<Either<RepositoryErrors, Portfolio>> => {
     const portfolioOrError = await portfolioRepository.update(id, {
-      name: body.name,
+      title: body.title,
+      bio: body.bio,
+      avatar_path: body.avatar_path,
     });
 
     if (portfolioOrError.isFailure()) return failure(portfolioOrError.value);

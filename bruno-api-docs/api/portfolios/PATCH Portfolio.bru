@@ -5,13 +5,19 @@ meta {
 }
 
 patch {
-  url: {{api_url}}/portfolios
+  url: {{api_url}}/portfolios/:id
   body: json
   auth: none
 }
 
+params:path {
+  id: 2
+}
+
 body:json {
   {
-    "name": "Portfolio-name-updated"
+    "title": "Portfolio-title-updated",
+    "bio": "bio,
+    "avatar_path": null
   }
 }

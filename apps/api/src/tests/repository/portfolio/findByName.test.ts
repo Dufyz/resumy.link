@@ -2,8 +2,8 @@ import { v4 } from "uuid";
 import { portfolioRepository } from "../../../infra/database/repositories/portfolio.repository";
 import { userRepository } from "../../../infra/database/repositories/user.repository";
 
-describe("Portfolio repository - Find by name", () => {
-  it("Should successfully find a portfolio by name", async () => {
+describe("Portfolio repository - Find by username", () => {
+  it("Should successfully find a portfolio by username", async () => {
     const baseUser = {
       name: "User",
       email: `${v4()}@email.com`,
@@ -22,20 +22,26 @@ describe("Portfolio repository - Find by name", () => {
 
     const basePortfolio = {
       user_id: user.id,
-      name: `portfolio-${v4()}`,
+      username: `portfolio-${v4()}`,
+      title: "title",
+      bio: null,
+      avatar_path: null,
     };
 
     const createdPortfolioOrError = await portfolioRepository.create({
       user_id: basePortfolio.user_id,
-      name: basePortfolio.name,
+      username: basePortfolio.username,
+      title: basePortfolio.title,
+      bio: basePortfolio.bio,
+      avatar_path: basePortfolio.avatar_path,
     });
 
     if (createdPortfolioOrError.isFailure()) {
       throw new Error(createdPortfolioOrError.value.message);
     }
 
-    const portfolioOrError = await portfolioRepository.findByName(
-      basePortfolio.name
+    const portfolioOrError = await portfolioRepository.findByUsername(
+      createdPortfolioOrError.value.username
     );
 
     if (portfolioOrError.isFailure()) {
@@ -46,7 +52,10 @@ describe("Portfolio repository - Find by name", () => {
     expect(portfolio).toEqual({
       id: expect.any(String),
       user_id: basePortfolio.user_id,
-      name: basePortfolio.name,
+      username: basePortfolio.username,
+      title: basePortfolio.title,
+      bio: basePortfolio.bio,
+      avatar_path: basePortfolio.avatar_path,
       created_at: expect.any(Date),
       updated_at: expect.any(Date),
     });

@@ -12,7 +12,10 @@ export const portfolioRepository: PortfolioRepository = {
         SELECT 
           p.id,
           p.user_id,
-          p.name,
+          p.username,
+          p.title,
+          p.bio,
+          p.avatar_path,
           p.created_at,
           p.updated_at
         FROM portfolios p
@@ -26,17 +29,20 @@ export const portfolioRepository: PortfolioRepository = {
       return failure(getRepositoryError(e));
     }
   },
-  findByName: async (name) => {
+  findByUsername: async (name) => {
     try {
       const [portfolio] = await sql`
         SELECT 
           p.id,
           p.user_id,
-          p.name,
+          p.username,
+          p.title,
+          p.bio,
+          p.avatar_path,
           p.created_at,
           p.updated_at
         FROM portfolios p
-        WHERE p.name = ${name}
+        WHERE p.username = ${name}
       `;
 
       if (!portfolio) return success(null);
@@ -48,9 +54,15 @@ export const portfolioRepository: PortfolioRepository = {
   },
   create: async (body) => {
     try {
-      const portfolioToCreate: Pick<Portfolio, "user_id" | "name"> = {
+      const portfolioToCreate: Pick<
+        Portfolio,
+        "user_id" | "username" | "title" | "bio" | "avatar_path"
+      > = {
         user_id: body.user_id,
-        name: body.name,
+        username: body.username,
+        title: body.title,
+        bio: body.bio,
+        avatar_path: body.avatar_path,
       };
 
       const colsToInsert = Object.keys(
@@ -59,7 +71,7 @@ export const portfolioRepository: PortfolioRepository = {
 
       const [portfolio] = await sql`
         INSERT INTO portfolios ${sql(portfolioToCreate, colsToInsert)}
-        RETURNING id, name, user_id, created_at, updated_at
+        RETURNING id, user_id, username, title, bio, avatar_path, created_at, updated_at
       `;
 
       return success(parsePortfolioFromDB(portfolio as Portfolio));
@@ -69,11 +81,14 @@ export const portfolioRepository: PortfolioRepository = {
   },
   update: async (id, body) => {
     try {
-      const portfolioToUpdate: Partial<Pick<Portfolio, "name" | "updated_at">> =
-        filterObjNullishValues({
-          name: body.name,
-          updated_at: new Date(),
-        });
+      const portfolioToUpdate: Partial<
+        Pick<Portfolio, "title" | "bio" | "avatar_path" | "updated_at">
+      > = filterObjNullishValues({
+        title: body.title,
+        bio: body.bio,
+        avatar_path: body.avatar_path,
+        updated_at: new Date(),
+      });
 
       const colsToUpdate = Object.keys(
         portfolioToUpdate
@@ -83,7 +98,7 @@ export const portfolioRepository: PortfolioRepository = {
         UPDATE portfolios
         SET ${sql(portfolioToUpdate, colsToUpdate)}
         WHERE id = ${id}
-        RETURNING id, name, user_id, created_at, updated_at
+        RETURNING id, user_id, username, title, bio, avatar_path, created_at, updated_at
       `;
 
       return success(parsePortfolioFromDB(portfolio as Portfolio));

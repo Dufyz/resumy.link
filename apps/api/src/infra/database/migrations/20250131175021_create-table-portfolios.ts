@@ -5,7 +5,10 @@ export async function up(knex: Knex): Promise<void> {
         CREATE TABLE portfolios (
             id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
             user_id BIGINT NOT NULL UNIQUE REFERENCES users(id),
-            name VARCHAR(255) NOT NULL UNIQUE,
+            username VARCHAR(255) NOT NULL UNIQUE,
+            title VARCHAR(255) NOT NULL,
+            bio TEXT NULL,
+            avatar_path TEXT NULL,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW()
         );

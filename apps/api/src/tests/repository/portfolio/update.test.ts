@@ -22,13 +22,18 @@ describe("Portfolio repository - Update", () => {
 
     const basePortfolio = {
       user_id: user.id,
-      name: `portfolio-${v4()}`,
-      updated_name: `portfolio-updated-${v4()}`,
+      username: `portfolio-${v4()}`,
+      title: "title",
+      bio: null,
+      avatar_path: null,
     };
 
     const createdPortfolioOrError = await portfolioRepository.create({
       user_id: basePortfolio.user_id,
-      name: basePortfolio.name,
+      username: basePortfolio.username,
+      title: basePortfolio.title,
+      bio: basePortfolio.bio,
+      avatar_path: basePortfolio.avatar_path,
     });
 
     if (createdPortfolioOrError.isFailure()) {
@@ -38,7 +43,7 @@ describe("Portfolio repository - Update", () => {
     const portfolioOrError = await portfolioRepository.update(
       createdPortfolioOrError.value.id,
       {
-        name: basePortfolio.updated_name,
+        title: "updated_title",
       }
     );
 
@@ -50,7 +55,10 @@ describe("Portfolio repository - Update", () => {
     expect(portfolio).toEqual({
       id: expect.any(String),
       user_id: basePortfolio.user_id,
-      name: basePortfolio.updated_name,
+      username: basePortfolio.username,
+      title: "updated_title",
+      bio: basePortfolio.bio,
+      avatar_path: basePortfolio.avatar_path,
       created_at: expect.any(Date),
       updated_at: expect.any(Date),
     });

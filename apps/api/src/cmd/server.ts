@@ -1,5 +1,6 @@
 import helmet from "helmet";
 import express from "express";
+import cors from "cors";
 import routes from "../presentation/routes";
 import { NODE_ENV, SERVER_PORT } from "../infra/config";
 
@@ -11,6 +12,15 @@ require("dotenv").config();
 // TODO: Logger
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
 app.use(helmet());
 app.use(express.json());
