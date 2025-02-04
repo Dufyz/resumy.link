@@ -6,9 +6,16 @@ import {
   postPortfolioSectionItemSchema,
   patchPortfolioSectionItemSchema,
   deletePortfolioSectionItemSchema,
+  getPortfolioSectionItemsByPortfolioIdSchema,
 } from "../validators/schemas/portfolio_section_item";
 
 const portfolioSectionItemsRoutes = Router();
+
+portfolioSectionItemsRoutes.get(
+  "/portfolio-section-items/portfolio/:portfolio_id",
+  validate(getPortfolioSectionItemsByPortfolioIdSchema),
+  PortfolioSectionItemController.handleGetPortfolioSectionItemsByPortfolioId
+);
 
 portfolioSectionItemsRoutes.post(
   "/portfolio-section-items",

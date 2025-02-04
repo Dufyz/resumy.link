@@ -5,6 +5,18 @@ import {
 import api from "@/config/api";
 import { PortfolioSection } from "@/types/portfolio-section-type";
 
+export async function getPortfolioSectionsByPortfolioId(
+  portfolioId: number
+): Promise<{
+  portfolio_sections: PortfolioSection[];
+}> {
+  const response = await api.get(
+    `/portfolio-sections/portfolio/${portfolioId}`
+  );
+
+  return response.data;
+}
+
 export async function postPortfolioSection(
   body: CreatePortfolioSectionSchema
 ): Promise<{

@@ -6,7 +6,7 @@ import {
 import { Portfolio } from "@/types/portfolio-type";
 
 export async function getPortfoliosByUserId(id: number): Promise<{
-  portfolios: Portfolio[];
+  portfolio: Portfolio;
   message: string;
 }> {
   const response = await api.get(`/portfolios/user/${id}`);

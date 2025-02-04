@@ -14,34 +14,30 @@ import { Badge } from "@/components/ui/badge";
 import { User, LogOut } from "lucide-react";
 import { signOut } from "@/app/login/actions/sign-out-action";
 import { redirect } from "next/navigation";
-
-const profile = {
-  name: "Guilherme Thomaz",
-  username: "dufyz",
-  role: "Software engineer",
-  avatar: null,
-  bio: "Passionate about creating amazing web experiences",
-  socialLinks: [],
-};
+import { useUserStore } from "@/stores/user-store";
 
 export function UserProfileMenu() {
+  const user = useUserStore((state) => state.user);
+
+  if (!user) return null;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="w-full">
-        <Button variant="ghost" className="h-auto p-0">
-          <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          className="h-auto p-2 flex items-center justify-start"
+        >
+          <div className="flex items-center justify-start gap-2">
             <Image
-              src={profile.avatar || "/placeholder.svg"}
-              alt={profile.name}
+              src={"/placeholder.svg"}
+              alt={user.name}
               width={32}
               height={32}
               className="rounded-full"
             />
             <div className="flex flex-col items-start text-sm">
-              <span className="font-medium">{profile.name}</span>
-              <span className="text-xs text-muted-foreground">
-                resumy.link/{profile.username}
-              </span>
+              <span className="font-medium">{user.name}</span>
             </div>
           </div>
         </Button>
@@ -49,22 +45,19 @@ export function UserProfileMenu() {
       <DropdownMenuContent className="w-72" align="start">
         <div className="flex items-center gap-2 p-2">
           <Image
-            src={profile.avatar || "/placeholder.svg"}
-            alt={profile.name}
+            src={"/placeholder.svg"}
+            alt={user.name}
             width={40}
             height={40}
             className="rounded-full"
           />
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="font-medium">{profile.name}</span>
+              <span className="font-medium">{user.name}</span>
               <Badge variant="secondary" className="text-xs font-normal">
                 Grátis
               </Badge>
             </div>
-            <span className="text-xs text-muted-foreground">
-              resumy.link/{profile.username}
-            </span>
           </div>
         </div>
 

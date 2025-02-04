@@ -2,6 +2,7 @@ import z from "zod";
 import { Request, Response } from "express";
 import {
   deletePortfolioSectionItemSchema,
+  getPortfolioSectionItemsByPortfolioIdSchema,
   patchPortfolioSectionItemSchema,
   postPortfolioSectionItemSchema,
 } from "../validators/schemas/portfolio_section_item";
@@ -11,6 +12,33 @@ import {
   updatePortfolioSectionItem,
 } from "../../application/usecases/portfolio/portfolio_section_item";
 import { portfolioSectionItemRepository } from "../../infra/database/repositories/portfolio_section_item.repository";
+import { listPortfolioSectionItemsByPortfolioId } from "../../application/usecases/portfolio/portfolio_section_item/listPortfolioSectionItemsByPortfolioId.usecase";
+
+export async function handleGetPortfolioSectionItemsByPortfolioId(
+  req: Request,
+  res: Response
+) {
+  const { portfolio_id } = req.params as unknown as z.infer<
+    typeof getPortfolioSectionItemsByPortfolioIdSchema
+  >["params"];
+
+  const portfolioSectionItemsOrError =
+    await listPortfolioSectionItemsByPortfolioId(
+      portfolioSectionItemRepository
+    )(portfolio_id);
+
+  if (portfolioSectionItemsOrError.isFailure()) {
+    res
+      .status(400)
+      .json({ message: portfolioSectionItemsOrError.value.message });
+    return;
+  }
+
+  const portfolioSectionItems = portfolioSectionItemsOrError.value;
+  res.status(201).json({
+    portfolio_section_items: portfolioSectionItems,
+  });
+}
 
 export async function handlePostPortfolioSectionItem(
   req: Request,

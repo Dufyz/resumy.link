@@ -1,0 +1,15 @@
+meta {
+  name: GET Portfolio by User Id
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{api_url}}/portfolios/user/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 1
+}

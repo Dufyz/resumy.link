@@ -76,7 +76,6 @@ export function UpdatePortfolioModal({ portfolio }: { portfolio: Portfolio }) {
             <Textarea
               id="bio"
               {...form.register("bio")}
-              placeholder="Engenheiro de software"
               className="resize-none"
               maxLength={80}
             />

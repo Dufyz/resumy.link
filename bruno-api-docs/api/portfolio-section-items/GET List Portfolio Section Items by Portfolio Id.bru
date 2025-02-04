@@ -1,0 +1,15 @@
+meta {
+  name: GET List Portfolio Section Items by Portfolio Id
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{api_url}}/portfolio-section-items/portfolio/:portfolio_id
+  body: none
+  auth: none
+}
+
+params:path {
+  portfolio_id: 1
+}

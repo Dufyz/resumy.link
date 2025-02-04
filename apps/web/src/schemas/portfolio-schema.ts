@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const portfolioSchema = z.object({
-  id: z.number(),
+  id: z.coerce.number(),
   user_id: z.number(),
   username: z.string(),
   title: z.string(),

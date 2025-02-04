@@ -62,7 +62,7 @@ export function CreatePortfolioSectionModal({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="w-full">
+      <DialogTrigger className="w-full" asChild>
         <Button variant="outline" className="w-full">
           <Folder className="mr-2 h-4 w-4" />
           Adicionar nova sessão

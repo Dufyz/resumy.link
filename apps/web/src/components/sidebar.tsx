@@ -34,7 +34,7 @@ const SIDEBAR_ITEMS = [
 
 export function Sidebar() {
   return (
-    <div className="sticky inset-y-0 left-0 z-30 flex w-[240px] flex-col border-r bg-background">
+    <div className="sticky inset-y-0 left-0 z-30 flex w-[240px] flex-col border-r bg-background max-h-screen min-h-screen">
       <div className="flex h-14 items-center border-b px-4">
         <Link href="/admin" className="flex items-center gap-2 font-semibold">
           <Code2 className="w-6 h-6 text-blue-600" />

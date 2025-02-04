@@ -13,6 +13,8 @@ import {
   patchPortfolioSchema,
   postPortfolioSchema,
 } from "../validators/schemas/portfolio";
+import { getPortfolioByUserIdSchema } from "../validators/schemas/portfolio/getPortfolioByUserId.schema";
+import { findPortfolioByUserId } from "../../application/usecases/portfolio/findPortfolioByUserId.usecase";
 
 export async function handleGetPortfolioById(req: Request, res: Response) {
   const { id } = req.params as unknown as z.infer<
@@ -49,6 +51,33 @@ export async function handleGetPortfolioByUsername(
 
   const portfolioOrError = await findPortfolioByUserame(portfolioRepository)(
     username
+  );
+
+  if (portfolioOrError.isFailure()) {
+    res.status(404).json({ message: portfolioOrError.value.message });
+    return;
+  }
+
+  const portfolio = portfolioOrError.value;
+
+  if (portfolio === null) {
+    res.status(404).json({ portfolio, message: "Portfolio not found" });
+    return;
+  }
+
+  res.status(200).json({
+    portfolio,
+    message: "Portfolio found",
+  });
+}
+
+export async function handleGetPortfolioByUserId(req: Request, res: Response) {
+  const { user_id } = req.params as unknown as z.infer<
+    typeof getPortfolioByUserIdSchema
+  >["params"];
+
+  const portfolioOrError = await findPortfolioByUserId(portfolioRepository)(
+    user_id
   );
 
   if (portfolioOrError.isFailure()) {

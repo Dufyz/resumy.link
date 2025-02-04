@@ -1,6 +1,6 @@
 import { Sidebar } from "@/components/sidebar";
 import { createClient } from "@/lib/supabase/server";
-import { getUserByEmail } from "@/queries/user-queries";
+import { AuthProvider } from "@/providers/auth-provider";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 
@@ -17,13 +17,16 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
 
   if (!authUser || !authUser.email) redirect("/login");
 
-  // const { user } = await getUserByEmail(authUser.email);
-  // const { portfolios } = await getPortfoliosByUserId(user.id);
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   return (
-    <div className="w-full flex min-h-screen">
-      <Sidebar />
-      <div className="w-full flex-1">{children}</div>
-    </div>
+    <AuthProvider session={session}>
+      <div className="w-full flex min-h-screen">
+        <Sidebar />
+        <div className="w-full flex-1">{children}</div>
+      </div>
+    </AuthProvider>
   );
 }

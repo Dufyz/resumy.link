@@ -4,6 +4,7 @@ import { PortfolioProfile } from "@/app/admin/components/portfolio/portfolio-pro
 import { CreatePortfolioSectionModal } from "./components/portfolio/portfolio-section/create-portfolio-section-modal";
 import ListPortfolioSections from "./components/portfolio/portfolio-section/list-portfolio-sections";
 import usePortfolio from "./hooks/usePortfolio";
+import { MobilePreview } from "./components/mobile-preview";
 
 export default function AdminPage() {
   const { portfolio } = usePortfolio();
@@ -21,9 +22,9 @@ export default function AdminPage() {
           </div>
         </div>
       </div>
-      {/* <div className="flex-2 py-6 px-8">
+      <div className="flex-2 py-6 px-8">
         <MobilePreview />
-      </div> */}
+      </div>
     </div>
   );
 }

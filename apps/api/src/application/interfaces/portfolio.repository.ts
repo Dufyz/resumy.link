@@ -7,6 +7,9 @@ export type PortfolioRepository = {
   findByUsername(
     username: string
   ): Promise<Either<RepositoryErrors, Portfolio | null>>;
+  findByUserId(
+    user_id: number
+  ): Promise<Either<RepositoryErrors, Portfolio | null>>;
   create(
     body: Pick<
       Portfolio,

@@ -3,6 +3,9 @@ import { Either } from "../../shared/utils/either";
 import { RepositoryErrors } from "../errors";
 
 export type PortfolioSectionRepository = {
+  listByPortfolioId(
+    portfolio_id: number
+  ): Promise<Either<RepositoryErrors, PortfolioSection[]>>;
   create(
     body: Pick<
       PortfolioSection,

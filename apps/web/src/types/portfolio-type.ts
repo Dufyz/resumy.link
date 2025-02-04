@@ -1,3 +1,4 @@
+import { PortfolioSectionItem } from "./portfolio-section-item-type";
 import { PortfolioSection } from "./portfolio-section-type";
 
 export type Portfolio = {
@@ -11,4 +12,5 @@ export type Portfolio = {
   updated_at: Date;
 
   portfolio_sections?: PortfolioSection[];
+  portfolio_section_items?: PortfolioSectionItem[];
 };

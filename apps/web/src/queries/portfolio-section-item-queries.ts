@@ -5,6 +5,18 @@ import {
 } from "@/schemas/portfolio-section-item-schema";
 import { PortfolioSectionItem } from "@/types/portfolio-section-item-type";
 
+export async function getPortfolioSectionItemsByPortfolioId(
+  portfolioId: number
+): Promise<{
+  portfolio_section_items: PortfolioSectionItem[];
+}> {
+  const response = await api.get(
+    `/portfolio-section-items/portfolio/${portfolioId}`
+  );
+
+  return response.data;
+}
+
 export async function postPortfolioSectionItem(
   body: CreatePortfolioSectionItemSchema
 ): Promise<{

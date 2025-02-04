@@ -52,6 +52,29 @@ export const portfolioRepository: PortfolioRepository = {
       return failure(getRepositoryError(e));
     }
   },
+  findByUserId: async (userId) => {
+    try {
+      const [portfolio] = await sql`
+        SELECT 
+          p.id,
+          p.user_id,
+          p.username,
+          p.title,
+          p.bio,
+          p.avatar_path,
+          p.created_at,
+          p.updated_at
+        FROM portfolios p
+        WHERE p.user_id = ${userId}
+      `;
+
+      if (!portfolio) return success(null);
+
+      return success(parsePortfolioFromDB(portfolio as Portfolio));
+    } catch (e: any) {
+      return failure(getRepositoryError(e));
+    }
+  },
   create: async (body) => {
     try {
       const portfolioToCreate: Pick<

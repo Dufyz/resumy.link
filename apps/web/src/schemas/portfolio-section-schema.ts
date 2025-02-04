@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const portfolioSectionSchema = z.object({
-  id: z.number(),
-  portfolio_id: z.number(),
+  id: z.coerce.number(),
+  portfolio_id: z.coerce.number(),
   is_active: z.boolean(),
   title: z.string(),
   type: z.enum([

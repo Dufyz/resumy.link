@@ -4,6 +4,7 @@ import * as PortfolioController from "../controllers/portfolio.controller";
 import { validate } from "../middlewares/zod.middleware";
 import {
   getPortfolioByIdSchema,
+  getPortfolioByUserIdSchema,
   getPortfolioByUsernameSchema,
   patchPortfolioSchema,
   postPortfolioSchema,
@@ -21,6 +22,12 @@ portfolioRoutes.get(
   "/portfolios/username/:username",
   validate(getPortfolioByUsernameSchema),
   PortfolioController.handleGetPortfolioByUsername
+);
+
+portfolioRoutes.get(
+  "/portfolios/user/:user_id",
+  validate(getPortfolioByUserIdSchema),
+  PortfolioController.handleGetPortfolioByUserId
 );
 
 portfolioRoutes.post(

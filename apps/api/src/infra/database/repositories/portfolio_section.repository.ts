@@ -9,6 +9,30 @@ import { filterObjNullishValues } from "../../../shared/utils/filterObjNullishVa
 import sql from "../postgresql";
 
 export const portfolioSectionRepository: PortfolioSectionRepository = {
+  listByPortfolioId: async (portfolio_id) => {
+    try {
+      const portfolioSections = await sql`
+        SELECT
+          ps.id,
+          ps.portfolio_id,
+          ps.is_active,
+          ps.type,
+          ps.title,
+          ps.created_at,
+          ps.updated_at
+        FROM portfolio_sections ps
+        WHERE portfolio_id = ${portfolio_id}
+      `;
+
+      return success(
+        portfolioSections.map((portfolioSection) =>
+          parsePortfolioSectionFromDB(portfolioSection as PortfolioSection)
+        )
+      );
+    } catch (e: any) {
+      return failure(getRepositoryError(e));
+    }
+  },
   create: async (body) => {
     try {
       const portfolioSectionToCreate: Pick<

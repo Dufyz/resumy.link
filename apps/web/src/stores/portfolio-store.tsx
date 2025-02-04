@@ -26,28 +26,7 @@ type PortfolioStore = {
 };
 
 export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
-  portfolio: {
-    id: 1,
-    user_id: 1,
-    avatar_path: null,
-    username: "Dufyz",
-    title: "Guilherme Iago Schmidt Thomaz",
-    bio: "Software Engineer",
-    created_at: new Date(),
-    updated_at: new Date(),
-    portfolio_sections: [
-      {
-        id: 1,
-        portfolio_id: 1,
-        is_active: true,
-        title: "title",
-        type: "education",
-        created_at: new Date(),
-        updated_at: new Date(),
-        portfolio_section_items: [],
-      },
-    ],
-  },
+  portfolio: undefined,
 
   setPortfolio: (portfolio) => set({ portfolio }),
 

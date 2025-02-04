@@ -40,7 +40,7 @@ export function CreatePortfolioSectionItem() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="w-full">
+      <DialogTrigger className="w-full" asChild>
         <Button variant="outline" className="w-full flex items-center gap-2">
           <Plus className="h-4 w-4" />
           Adicionar item
