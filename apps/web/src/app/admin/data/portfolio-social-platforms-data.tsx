@@ -15,7 +15,7 @@ export interface SocialPlatform {
   icon: React.ReactNode;
 }
 
-export const SOCIAL_PLATFORMS: SocialPlatform[] = [
+export const PORTFOLIO_SOCIAL_PLATFORMS: SocialPlatform[] = [
   {
     id: "threads",
     name: "Threads",

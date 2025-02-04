@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { X, Search } from "lucide-react";
 import { useState } from "react";
-import { SOCIAL_PLATFORMS } from "@/app/admin/data/portfolio-social-platforms-data";
+import { PORTFOLIO_SOCIAL_PLATFORMS } from "@/app/admin/data/portfolio-social-platforms-data";
 
 const searchSchema = z.object({
   search: z.string().min(1, "Search cannot be empty"),
@@ -59,7 +59,7 @@ export function CreatePortfolioSocialModal() {
         </div>
         <ScrollArea className="max-h-[300px] px-4">
           <div className="space-y-1">
-            {SOCIAL_PLATFORMS.map((platform) => (
+            {PORTFOLIO_SOCIAL_PLATFORMS.map((platform) => (
               <button
                 key={platform.id}
                 onClick={() => {

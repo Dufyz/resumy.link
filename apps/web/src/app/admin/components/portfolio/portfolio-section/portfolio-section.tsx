@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { ForwardRefExoticComponent, RefAttributes, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { LayoutGrid, Trash2 } from "lucide-react";
@@ -9,13 +9,15 @@ import { CSS } from "@dnd-kit/utilities";
 import { AnimatePresence, motion } from "framer-motion";
 import { PortfolioSectionItem } from "./portfolio-section-item/portoflio-section-item";
 import { cn } from "@/lib/utils";
-import { CreatePortfolioSectionItem } from "./portfolio-section-item/create-portfolio-section-item";
+import { CreatePortfolioSectionItemModal } from "./portfolio-section-item/create-portfolio-section-item-modal";
 import { PortfolioSection as PortfolioSectionType } from "@/types/portfolio-section-type";
-import { usePortfolioStore } from "@/stores/portfolio-store";
 import {
   patchPortfolioSection,
   deletePortfolioSection as deletePortfolioSectionQuery,
 } from "@/queries/portfolio-section-queries";
+import usePortfolio from "@/hooks/usePortfolio";
+import { PORTFOLIO_SECTION_TYPES } from "@/app/admin/data/portfolio-section-types-data";
+import { Icon, IconProps } from "@tabler/icons-react";
 
 export function PortfolioSection({
   portfolioSection,
@@ -28,13 +30,7 @@ export function PortfolioSection({
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: dragId });
 
-  const updatePortfolioSection = usePortfolioStore(
-    (state) => state.updatePortfolioSection
-  );
-
-  const deletePortfolioSection = usePortfolioStore(
-    (state) => state.deletePortfolioSection
-  );
+  const { updatePortfolioSection, deletePortfolioSection } = usePortfolio();
 
   const toggleCollection = () => {
     const isActive = !portfolioSection.is_active;
@@ -54,6 +50,10 @@ export function PortfolioSection({
     deletePortfolioSectionQuery(portfolioSection.id);
   };
 
+  const Icon = PORTFOLIO_SECTION_TYPES.find(
+    (type) => type.value === portfolioSection.type
+  )?.icon as ForwardRefExoticComponent<IconProps & RefAttributes<Icon>>;
+
   return (
     <motion.div
       layout
@@ -72,6 +72,7 @@ export function PortfolioSection({
           "transition-shadow duration-200 flex flex-col gap-4 rounded-xl border bg-card p-6 shadow-sm hover:shadow-md",
           {
             "shadow-lg": isDragging,
+            "opacity-50": !portfolioSection.is_active,
           }
         )}
       >
@@ -88,7 +89,7 @@ export function PortfolioSection({
               <GripVertical className="h-5 w-5 text-muted-foreground" />
             </button> */}
             <div className="flex items-center gap-2">
-              <LayoutGrid className="h-5 w-5 text-primary" />
+              <Icon className="h-5 w-5 text-primary" />
               <h3 className="font-semibold">{portfolioSection.title}</h3>
               <span className="text-sm text-muted-foreground">
                 {portfolioSection.portfolio_section_items?.length} itens
@@ -127,7 +128,7 @@ export function PortfolioSection({
           </div>
         </AnimatePresence>
 
-        <CreatePortfolioSectionItem />
+        <CreatePortfolioSectionItemModal />
       </div>
     </motion.div>
   );

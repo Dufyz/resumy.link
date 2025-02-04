@@ -14,10 +14,10 @@ import { Badge } from "@/components/ui/badge";
 import { User, LogOut } from "lucide-react";
 import { signOut } from "@/app/login/actions/sign-out-action";
 import { redirect } from "next/navigation";
-import { useUserStore } from "@/stores/user-store";
+import useUser from "@/hooks/useUser";
 
 export function UserProfileMenu() {
-  const user = useUserStore((state) => state.user);
+  const { user } = useUser();
 
   if (!user) return null;
 

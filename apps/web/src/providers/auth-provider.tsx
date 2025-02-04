@@ -13,11 +13,12 @@ import {
   NEXT_PUBLIC_SUPABASE_URL,
 } from "@/config";
 import { getUserByEmail } from "@/queries/user-queries";
-import { useUserStore } from "@/stores/user-store";
 import { getPortfoliosByUserId } from "@/queries/portfolio-queries";
-import { usePortfolioStore } from "@/stores/portfolio-store";
 import { getPortfolioSectionsByPortfolioId } from "@/queries/portfolio-section-queries";
 import { getPortfolioSectionItemsByPortfolioId } from "@/queries/portfolio-section-item-queries";
+import SplashScreen from "@/app/admin/components/splash-screen";
+import useUser from "@/hooks/useUser";
+import usePortfolio from "@/hooks/usePortfolio";
 
 const AuthContext = createContext(null);
 
@@ -35,8 +36,8 @@ export function AuthProvider({
 }) {
   const [isLoading, setIsLoading] = useState(true);
 
-  const setUser = useUserStore((state) => state.setUser);
-  const setPortfolio = usePortfolioStore((state) => state.setPortfolio);
+  const { setUser } = useUser();
+  const { setPortfolio } = usePortfolio();
 
   useEffect(() => {
     const {
@@ -46,7 +47,7 @@ export function AuthProvider({
 
       if (event === "INITIAL_SESSION") {
         try {
-          setIsLoading(false);
+          setIsLoading(true);
 
           const {
             user: { email },
@@ -72,7 +73,9 @@ export function AuthProvider({
         } catch (error) {
           console.error(error);
         } finally {
-          setIsLoading(false);
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 750);
         }
       }
     });
@@ -82,14 +85,18 @@ export function AuthProvider({
     };
   }, [session, setPortfolio, setUser]);
 
+  const value = {
+    isLoading,
+  };
+
   if (isLoading)
     return (
-      <AuthContext.Provider value={{}}>
-        <p>Carregando...</p>
+      <AuthContext.Provider value={value}>
+        <SplashScreen />
       </AuthContext.Provider>
     );
 
-  return <AuthContext.Provider value={{}}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

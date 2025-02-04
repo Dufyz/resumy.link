@@ -16,13 +16,16 @@ import {
 import { AnimatePresence } from "framer-motion";
 import { PortfolioSection } from "./portfolio-section";
 import { Portfolio } from "@/types/portfolio-type";
+import { useSortPortfolioSections } from "@/app/admin/hooks/useSortPortfolioSections";
 
 export default function ListPortfolioSections({
   portfolio,
 }: {
   portfolio: Portfolio;
 }) {
-  const portfolioSections = portfolio.portfolio_sections;
+  const portfolioSections = useSortPortfolioSections(
+    portfolio.portfolio_sections || []
+  );
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -44,11 +47,11 @@ export default function ListPortfolioSections({
       onDragEnd={onDragEnd}
     >
       <SortableContext
-        items={(portfolioSections || []).map((c) => `section-${c.id}`)}
+        items={portfolioSections.map((c) => `section-${c.id}`)}
         strategy={verticalListSortingStrategy}
       >
         <AnimatePresence>
-          {(portfolioSections || []).map((s) => (
+          {portfolioSections.map((s) => (
             <PortfolioSection
               key={s.id}
               portfolioSection={{

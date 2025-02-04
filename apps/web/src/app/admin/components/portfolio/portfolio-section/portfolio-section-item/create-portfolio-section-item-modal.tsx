@@ -15,15 +15,13 @@ import {
   CreatePortfolioSectionItemSchema,
   createPortfolioSectionItemSchema,
 } from "@/schemas/portfolio-section-item-schema";
-import { usePortfolioStore } from "@/stores/portfolio-store";
 import { postPortfolioSectionItem } from "@/queries/portfolio-section-item-queries";
+import usePortfolio from "@/hooks/usePortfolio";
 
-export function CreatePortfolioSectionItem() {
+export function CreatePortfolioSectionItemModal() {
   const [open, setOpen] = useState(false);
 
-  const createPortfolioSectionItem = usePortfolioStore(
-    (state) => state.createPortfolioSectionItem
-  );
+  const { createPortfolioSectionItem } = usePortfolio();
 
   const form = useForm<CreatePortfolioSectionItemSchema>({
     resolver: zodResolver(createPortfolioSectionItemSchema),
