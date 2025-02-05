@@ -1,42 +1,93 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from "@/config/api";
+import { ApiError } from "@/errors/api-error";
+import { Either, failure, success } from "@/lib/either";
 import { CreateUserSchema, UpdateUserSchema } from "@/schemas/user-schema";
 import { User } from "@/types/user-type";
 
-export async function getUserById(id: number): Promise<{
-  user: User;
-  message: string;
-}> {
-  const response = await api.get(`/users/${id}`);
+export async function getUserById(id: number): Promise<
+  Either<
+    ApiError,
+    {
+      user: User;
+      message: string;
+    }
+  >
+> {
+  try {
+    const response = await api.get(`/users/${id}`);
 
-  return response.data;
+    return success(response.data);
+  } catch (error: any) {
+    return failure({
+      status: error.response.status,
+      message: error.response.data,
+    });
+  }
 }
 
-export async function getUserByEmail(email: string): Promise<{
-  user: User;
-  message: string;
-}> {
-  const response = await api.get(`/users/email/${email}`);
+export async function getUserByEmail(email: string): Promise<
+  Either<
+    ApiError,
+    {
+      user: User;
+      message: string;
+    }
+  >
+> {
+  try {
+    const response = await api.get(`/users/email/${email}`);
 
-  return response.data;
+    return success(response.data);
+  } catch (error: any) {
+    return failure({
+      status: error.response.status,
+      message: error.response.data,
+    });
+  }
 }
 
-export async function postUser(body: CreateUserSchema): Promise<{
-  user: User;
-  message: string;
-}> {
-  const response = await api.post("/users", body);
+export async function postUser(body: CreateUserSchema): Promise<
+  Either<
+    ApiError,
+    {
+      user: User;
+      message: string;
+    }
+  >
+> {
+  try {
+    const response = await api.post("/users", body);
 
-  return response.data;
+    return success(response.data);
+  } catch (error: any) {
+    return failure({
+      status: error.response.status,
+      message: error.response.data,
+    });
+  }
 }
 
 export async function patchUser(
   id: number,
   body: UpdateUserSchema
-): Promise<{
-  user: User;
-  message: string;
-}> {
-  const response = await api.patch(`/users/${id}`, body);
+): Promise<
+  Either<
+    ApiError,
+    {
+      user: User;
+      message: string;
+    }
+  >
+> {
+  try {
+    const response = await api.patch(`/users/${id}`, body);
 
-  return response.data;
+    return success(response.data);
+  } catch (error: any) {
+    return failure({
+      status: error.response.status,
+      message: error.response.data,
+    });
+  }
 }

@@ -1,0 +1,17 @@
+meta {
+  name: POST Check Username Availability
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{api_url}}/portfolios/check-username-availability
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "caraca"
+  }
+}

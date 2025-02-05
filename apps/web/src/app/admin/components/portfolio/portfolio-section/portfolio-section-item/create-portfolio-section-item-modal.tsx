@@ -18,6 +18,7 @@ import {
 import { postPortfolioSectionItem } from "@/queries/portfolio-section-item-queries";
 import usePortfolio from "@/hooks/usePortfolio";
 
+// TODO: Implement
 export function CreatePortfolioSectionItemModal() {
   const [open, setOpen] = useState(false);
 
@@ -29,8 +30,11 @@ export function CreatePortfolioSectionItemModal() {
   });
 
   async function onSubmit(data: CreatePortfolioSectionItemSchema) {
-    const { portfolio_section_item } = await postPortfolioSectionItem(data);
+    const portfolioSectionItemOrError = await postPortfolioSectionItem(data);
 
+    if (portfolioSectionItemOrError.isFailure()) return;
+
+    const { portfolio_section_item } = portfolioSectionItemOrError.value;
     createPortfolioSectionItem(portfolio_section_item);
     setOpen(false);
     form.reset();

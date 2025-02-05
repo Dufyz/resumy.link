@@ -1,54 +1,142 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from "@/config/api";
+import { ApiError } from "@/errors/api-error";
+import { Either, failure, success } from "@/lib/either";
 import {
   CreatePortfolioSchema,
   UpdatePortfolioSchema,
 } from "@/schemas/portfolio-schema";
 import { Portfolio } from "@/types/portfolio-type";
 
-export async function getPortfoliosByUserId(id: number): Promise<{
-  portfolio: Portfolio;
-  message: string;
-}> {
-  const response = await api.get(`/portfolios/user/${id}`);
+export async function getPortfoliosByUserId(id: number): Promise<
+  Either<
+    ApiError,
+    {
+      portfolio: Portfolio;
+      message: string;
+    }
+  >
+> {
+  try {
+    const response = await api.get(`/portfolios/user/${id}`);
 
-  return response.data;
+    return success(response.data);
+  } catch (error: any) {
+    return failure({
+      status: error.response.status,
+      message: error.response.data,
+    });
+  }
 }
 
-export async function getPortfolioById(id: number): Promise<{
-  portfolio: Portfolio;
-  message: string;
-}> {
-  const response = await api.get(`/portfolios/${id}`);
+export async function getPortfolioById(id: number): Promise<
+  Either<
+    ApiError,
+    {
+      portfolio: Portfolio;
+      message: string;
+    }
+  >
+> {
+  try {
+    const response = await api.get(`/portfolios/${id}`);
 
-  return response.data;
+    return success(response.data);
+  } catch (error: any) {
+    return failure({
+      status: error.response.status,
+      message: error.response.data,
+    });
+  }
 }
 
-export async function getPortfolioByUsername(username: string): Promise<{
-  portfolio: Portfolio;
-  message: string;
-}> {
-  const response = await api.get(`/portfolios/name/${username}`);
+export async function getPortfolioByUsername(username: string): Promise<
+  Either<
+    ApiError,
+    {
+      portfolio: Portfolio;
+      message: string;
+    }
+  >
+> {
+  try {
+    const response = await api.get(`/portfolios/name/${username}`);
 
-  return response.data;
+    return success(response.data);
+  } catch (error: any) {
+    return failure({
+      status: error.response.status,
+      message: error.response.data,
+    });
+  }
 }
 
-export async function postPortfolio(body: CreatePortfolioSchema): Promise<{
-  portfolio: Portfolio;
-  message: string;
-}> {
-  const response = await api.post("/portfolios", body);
+export async function postPortfolio(body: CreatePortfolioSchema): Promise<
+  Either<
+    ApiError,
+    {
+      portfolio: Portfolio;
+      message: string;
+    }
+  >
+> {
+  try {
+    const response = await api.post("/portfolios", body);
 
-  return response.data;
+    return success(response.data);
+  } catch (error: any) {
+    return failure({
+      status: error.response.status,
+      message: error.response.data,
+    });
+  }
+}
+
+export async function postCheckPortfolioUsernameAvailability(
+  username: string
+): Promise<
+  Either<
+    ApiError,
+    {
+      available: boolean;
+      message: string;
+    }
+  >
+> {
+  try {
+    const response = await api.post("/portfolios/check-username-availability", {
+      username,
+    });
+
+    return success(response.data);
+  } catch (error: any) {
+    return failure({
+      status: error.response.status,
+      message: error.response.data,
+    });
+  }
 }
 
 export async function patchPortfolio(
   id: number,
   body: UpdatePortfolioSchema
-): Promise<{
-  portfolio: Portfolio;
-  message: string;
-}> {
-  const response = await api.patch(`/portfolios/${id}`, body);
+): Promise<
+  Either<
+    ApiError,
+    {
+      portfolio: Portfolio;
+      message: string;
+    }
+  >
+> {
+  try {
+    const response = await api.patch(`/portfolios/${id}`, body);
 
-  return response.data;
+    return success(response.data);
+  } catch (error: any) {
+    return failure({
+      status: error.response.status,
+      message: error.response.data,
+    });
+  }
 }

@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from "@/config/api";
+import { ApiError } from "@/errors/api-error";
+import { Either, failure, success } from "@/lib/either";
 import {
   CreatePortfolioSectionItemSchema,
   UpdatePortfolioSectionItemSchema,
@@ -7,43 +10,91 @@ import { PortfolioSectionItem } from "@/types/portfolio-section-item-type";
 
 export async function getPortfolioSectionItemsByPortfolioId(
   portfolioId: number
-): Promise<{
-  portfolio_section_items: PortfolioSectionItem[];
-}> {
-  const response = await api.get(
-    `/portfolio-section-items/portfolio/${portfolioId}`
-  );
+): Promise<
+  Either<
+    ApiError,
+    {
+      portfolio_section_items: PortfolioSectionItem[];
+    }
+  >
+> {
+  try {
+    const response = await api.get(
+      `/portfolio-section-items/portfolio/${portfolioId}`
+    );
 
-  return response.data;
+    return success(response.data);
+  } catch (error: any) {
+    return failure({
+      status: error.response.status,
+      message: error.response.data,
+    });
+  }
 }
 
 export async function postPortfolioSectionItem(
   body: CreatePortfolioSectionItemSchema
-): Promise<{
-  portfolio_section_item: PortfolioSectionItem;
-  message: string;
-}> {
-  const response = await api.post("/portfolio-section-items", body);
+): Promise<
+  Either<
+    ApiError,
+    {
+      portfolio_section_item: PortfolioSectionItem;
+      message: string;
+    }
+  >
+> {
+  try {
+    const response = await api.post("/portfolio-section-items", body);
 
-  return response.data;
+    return success(response.data);
+  } catch (error: any) {
+    return failure({
+      status: error.response.status,
+      message: error.response.data,
+    });
+  }
 }
 
 export async function patchPortfolioSectionItem(
   id: number,
   body: UpdatePortfolioSectionItemSchema
-): Promise<{
-  portfolio_section_item: PortfolioSectionItem;
-  message: string;
-}> {
-  const response = await api.patch(`/portfolio-section-items/${id}`, body);
+): Promise<
+  Either<
+    ApiError,
+    {
+      portfolio_section_item: PortfolioSectionItem;
+      message: string;
+    }
+  >
+> {
+  try {
+    const response = await api.patch(`/portfolio-section-items/${id}`, body);
 
-  return response.data;
+    return success(response.data);
+  } catch (error: any) {
+    return failure({
+      status: error.response.status,
+      message: error.response.data,
+    });
+  }
 }
 
-export async function deletePortfolioSectionItem(id: number): Promise<{
-  message: string;
-}> {
-  const response = await api.delete(`/portfolio-section-items/${id}`);
+export async function deletePortfolioSectionItem(id: number): Promise<
+  Either<
+    ApiError,
+    {
+      message: string;
+    }
+  >
+> {
+  try {
+    const response = await api.delete(`/portfolio-section-items/${id}`);
 
-  return response.data;
+    return success(response.data);
+  } catch (error: any) {
+    return failure({
+      status: error.response.status,
+      message: error.response.data,
+    });
+  }
 }

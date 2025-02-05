@@ -31,8 +31,8 @@ export function UpdatePortfolioModal({ portfolio }: { portfolio: Portfolio }) {
     resolver: zodResolver(updatePortfolioSchema),
     defaultValues: {
       title: portfolio.title,
-      username: portfolio.username,
       bio: portfolio.bio,
+      username: portfolio.username,
       avatar_path: portfolio.avatar_path,
     },
   });
@@ -41,8 +41,11 @@ export function UpdatePortfolioModal({ portfolio }: { portfolio: Portfolio }) {
     try {
       setIsSubmitting(true);
 
-      const { portfolio: response } = await patchPortfolio(portfolio.id, data);
+      const responseOrError = await patchPortfolio(portfolio.id, data);
 
+      if (responseOrError.isFailure()) return;
+
+      const { portfolio: response } = responseOrError.value;
       updatePortfolio(response);
       setOpen(false);
       form.reset(response);
@@ -104,7 +107,7 @@ export function UpdatePortfolioModal({ portfolio }: { portfolio: Portfolio }) {
             className={cn("w-full bg-purple-600 hover:bg-purple-700", {
               "cursor-not-allowed opacity-70": isSubmitting,
             })}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !form.formState.isDirty}
           >
             {isSubmitting && (
               <>

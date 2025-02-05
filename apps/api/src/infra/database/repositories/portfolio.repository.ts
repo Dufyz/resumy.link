@@ -75,6 +75,20 @@ export const portfolioRepository: PortfolioRepository = {
       return failure(getRepositoryError(e));
     }
   },
+  checkUsernameAvailability: async (username) => {
+    try {
+      const [portfolio] = await sql`
+        SELECT 
+          p.id
+        FROM portfolios p
+        WHERE p.username = ${username}
+      `;
+
+      return success(!!portfolio);
+    } catch (e: any) {
+      return failure(getRepositoryError(e));
+    }
+  },
   create: async (body) => {
     try {
       const portfolioToCreate: Pick<

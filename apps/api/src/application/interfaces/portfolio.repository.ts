@@ -10,6 +10,9 @@ export type PortfolioRepository = {
   findByUserId(
     user_id: number
   ): Promise<Either<RepositoryErrors, Portfolio | null>>;
+  checkUsernameAvailability(
+    username: string
+  ): Promise<Either<RepositoryErrors, boolean>>;
   create(
     body: Pick<
       Portfolio,

@@ -37,7 +37,9 @@ export function UserProfileMenu() {
               className="rounded-full"
             />
             <div className="flex flex-col items-start text-sm">
-              <span className="font-medium">{user.name}</span>
+              <span className="font-medium">
+                <span className="font-medium">{user.name.split(" ")[0]}</span>
+              </span>
             </div>
           </div>
         </Button>
@@ -53,7 +55,7 @@ export function UserProfileMenu() {
           />
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="font-medium">{user.name}</span>
+              <span className="font-medium">{user.name.split(" ")[0]}</span>
               <Badge variant="secondary" className="text-xs font-normal">
                 Grátis
               </Badge>

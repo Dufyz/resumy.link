@@ -54,8 +54,11 @@ export function CreatePortfolioSectionModal({
   async function onSubmit(data: CreatePortfolioSectionSchema) {
     try {
       setIsSubmitting(true);
-      const { portfolio_section } = await postPortfolioSection(data);
+      const portfolioSectionOrError = await postPortfolioSection(data);
 
+      if (portfolioSectionOrError.isFailure()) return;
+
+      const { portfolio_section } = portfolioSectionOrError.value;
       createPortfolioSection(portfolio_section);
       setOpen(false);
       form.reset();

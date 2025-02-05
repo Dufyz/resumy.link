@@ -9,6 +9,7 @@ import {
   patchPortfolioSchema,
   postPortfolioSchema,
 } from "../validators/schemas/portfolio";
+import { postCheckUsernameAvailabilitySchema } from "../validators/schemas/portfolio/postCheckUsernameAvailability.schema";
 
 const portfolioRoutes = Router();
 
@@ -34,6 +35,12 @@ portfolioRoutes.post(
   "/portfolios",
   validate(postPortfolioSchema),
   PortfolioController.handlePostPortfolio
+);
+
+portfolioRoutes.post(
+  "/portfolios/check-username-availability",
+  validate(postCheckUsernameAvailabilitySchema),
+  PortfolioController.handlePostCheckUsernameAvailability
 );
 
 portfolioRoutes.patch(

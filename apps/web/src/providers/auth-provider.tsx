@@ -20,7 +20,9 @@ import SplashScreen from "@/app/admin/components/splash-screen";
 import useUser from "@/hooks/useUser";
 import usePortfolio from "@/hooks/usePortfolio";
 
-const AuthContext = createContext(null);
+const AuthContext = createContext<{
+  isLoading: boolean;
+} | null>(null);
 
 const supabase = createClient(
   NEXT_PUBLIC_SUPABASE_URL,
@@ -55,21 +57,33 @@ export function AuthProvider({
 
           if (!email) return;
 
-          const { user } = await getUserByEmail(email);
+          const userResponseOrError = await getUserByEmail(email);
+          if (userResponseOrError.isFailure()) return;
+
+          const { user } = userResponseOrError.value;
           setUser(user);
 
-          const { portfolio } = await getPortfoliosByUserId(user.id);
+          const portfolioResponseOrError = await getPortfoliosByUserId(user.id);
+          if (portfolioResponseOrError.isFailure()) return;
 
-          const [{ portfolio_sections }, { portfolio_section_items }] =
+          const { portfolio } = portfolioResponseOrError.value;
+          setPortfolio(portfolio);
+
+          const [portfolioSectionsOrError, portfolioSectionItemsOrError] =
             await Promise.all([
               getPortfolioSectionsByPortfolioId(portfolio.id),
               getPortfolioSectionItemsByPortfolioId(portfolio.id),
             ]);
 
+          if (portfolioSectionsOrError.isFailure()) return;
+          if (portfolioSectionItemsOrError.isFailure()) return;
+
+          const { portfolio_sections } = portfolioSectionsOrError.value;
+          const { portfolio_section_items } =
+            portfolioSectionItemsOrError.value;
+
           portfolio.portfolio_sections = portfolio_sections;
           portfolio.portfolio_section_items = portfolio_section_items;
-
-          setPortfolio(portfolio);
         } catch (error) {
           console.error(error);
         } finally {
@@ -100,5 +114,9 @@ export function AuthProvider({
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 }

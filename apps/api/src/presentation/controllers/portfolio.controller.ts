@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import {
   createPortfolio,
   findPortfolioById,
-  findPortfolioByUserame,
+  findPortfolioByUsername,
   updatePortfolio,
 } from "../../application/usecases/portfolio";
 import { portfolioRepository } from "../../infra/database/repositories/portfolio.repository";
@@ -15,6 +15,8 @@ import {
 } from "../validators/schemas/portfolio";
 import { getPortfolioByUserIdSchema } from "../validators/schemas/portfolio/getPortfolioByUserId.schema";
 import { findPortfolioByUserId } from "../../application/usecases/portfolio/findPortfolioByUserId.usecase";
+import { postCheckUsernameAvailabilitySchema } from "../validators/schemas/portfolio/postCheckUsernameAvailability.schema";
+import { checkUsernameAvailability } from "../../application/usecases/portfolio/checkUsernameAvailability.usecase";
 
 export async function handleGetPortfolioById(req: Request, res: Response) {
   const { id } = req.params as unknown as z.infer<
@@ -49,7 +51,7 @@ export async function handleGetPortfolioByUsername(
     typeof getPortfolioByUsernameSchema
   >["params"];
 
-  const portfolioOrError = await findPortfolioByUserame(portfolioRepository)(
+  const portfolioOrError = await findPortfolioByUsername(portfolioRepository)(
     username
   );
 
@@ -119,6 +121,39 @@ export async function handlePostPortfolio(req: Request, res: Response) {
   res.status(201).json({
     portfolio,
     message: "Portfolio created",
+  });
+}
+
+export async function handlePostCheckUsernameAvailability(
+  req: Request,
+  res: Response
+) {
+  const { username } = req.body as unknown as z.infer<
+    typeof postCheckUsernameAvailabilitySchema
+  >["body"];
+
+  const resultOrError = await checkUsernameAvailability(portfolioRepository)(
+    username
+  );
+
+  if (resultOrError.isFailure()) {
+    res.status(404).json({ message: resultOrError.value.message });
+    return;
+  }
+
+  const result = resultOrError.value;
+
+  if (result) {
+    res.status(200).json({
+      available: false,
+      message: "Username not available",
+    });
+    return;
+  }
+
+  res.status(200).json({
+    available: true,
+    message: "Username available",
   });
 }
 
