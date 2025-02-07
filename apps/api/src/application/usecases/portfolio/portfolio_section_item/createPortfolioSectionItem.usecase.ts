@@ -8,7 +8,7 @@ export const createPortfolioSectionItem =
   async (
     body: Pick<
       PortfolioSectionItem,
-      "portfolio_id" | "portfolio_section_id" | "is_active"
+      "portfolio_id" | "portfolio_section_id" | "is_active" | "metadata"
     >
   ): Promise<Either<RepositoryErrors, PortfolioSectionItem>> => {
     const portfolioSectionItemOrError =
@@ -16,6 +16,7 @@ export const createPortfolioSectionItem =
         portfolio_id: body.portfolio_id,
         portfolio_section_id: body.portfolio_section_id,
         is_active: body.is_active,
+        metadata: body.metadata,
       });
 
     if (portfolioSectionItemOrError.isFailure())

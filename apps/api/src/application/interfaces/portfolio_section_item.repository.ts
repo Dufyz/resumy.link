@@ -9,12 +9,12 @@ export type PortfolioSectionItemRepository = {
   create(
     body: Pick<
       PortfolioSectionItem,
-      "portfolio_id" | "portfolio_section_id" | "is_active"
+      "portfolio_id" | "portfolio_section_id" | "is_active" | "metadata"
     >
   ): Promise<Either<RepositoryErrors, PortfolioSectionItem>>;
   update(
     id: number,
-    body: Partial<Pick<PortfolioSectionItem, "is_active">>
+    body: Partial<Pick<PortfolioSectionItem, "is_active" | "metadata">>
   ): Promise<Either<RepositoryErrors, PortfolioSectionItem>>;
   delete(id: number): Promise<Either<RepositoryErrors, void>>;
 };

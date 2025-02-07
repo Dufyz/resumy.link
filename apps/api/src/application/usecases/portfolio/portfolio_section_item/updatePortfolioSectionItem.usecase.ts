@@ -7,11 +7,12 @@ export const updatePortfolioSectionItem =
   (portfolioSectionItemRepository: PortfolioSectionItemRepository) =>
   async (
     id: number,
-    body: Partial<Pick<PortfolioSectionItem, "is_active">>
+    body: Partial<Pick<PortfolioSectionItem, "is_active" | "metadata">>
   ): Promise<Either<RepositoryErrors, PortfolioSectionItem>> => {
     const portfolioSectionItemOrError =
       await portfolioSectionItemRepository.update(id, {
         is_active: body.is_active,
+        metadata: body.metadata,
       });
 
     if (portfolioSectionItemOrError.isFailure())

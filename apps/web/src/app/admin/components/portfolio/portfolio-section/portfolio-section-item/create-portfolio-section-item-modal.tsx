@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,77 +8,307 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { Plus } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Textarea } from "@/components/ui/textarea";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus, X } from "lucide-react";
 import {
   CreatePortfolioSectionItemSchema,
   createPortfolioSectionItemSchema,
 } from "@/schemas/portfolio-section-item-schema";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { PortfolioSection } from "@/types/portfolio-section-type";
 import { postPortfolioSectionItem } from "@/queries/portfolio-section-item-queries";
 import usePortfolio from "@/hooks/usePortfolio";
 
-// TODO: Implement
-export function CreatePortfolioSectionItemModal() {
+export function CreatePortfolioSectionItemModal({
+  portfolioSection,
+}: {
+  portfolioSection: PortfolioSection;
+}) {
   const [open, setOpen] = useState(false);
+
+  const [skills, setSkills] = useState<string[]>([]);
+  const [skillInput, setSkillInput] = useState("");
+  const [isCurrent, setIsCurrent] = useState(false);
 
   const { createPortfolioSectionItem } = usePortfolio();
 
   const form = useForm<CreatePortfolioSectionItemSchema>({
     resolver: zodResolver(createPortfolioSectionItemSchema),
-    defaultValues: {},
+    defaultValues: {
+      portfolio_id: portfolioSection.portfolio_id,
+      portfolio_section_id: portfolioSection.id,
+      is_active: true,
+      metadata: {
+        type: portfolioSection.type,
+        title: "",
+        description: "",
+        organization: "",
+        start_date: undefined,
+        end_date: null,
+        url: null,
+        skills: [],
+        level: undefined,
+      },
+    },
   });
 
-  async function onSubmit(data: CreatePortfolioSectionItemSchema) {
-    const portfolioSectionItemOrError = await postPortfolioSectionItem(data);
+  const handleAddSkill = () => {
+    const trimmedSkill = skillInput.trim();
+    if (trimmedSkill && !skills.includes(trimmedSkill)) {
+      const newSkills = [...skills, trimmedSkill];
+      setSkills(newSkills);
+      setSkillInput("");
+      form.setValue("metadata.skills", newSkills);
+    }
+  };
 
-    if (portfolioSectionItemOrError.isFailure()) return;
+  const handleRemoveSkill = (skillToRemove: string) => {
+    const newSkills = skills.filter((skill) => skill !== skillToRemove);
+    setSkills(newSkills);
+    form.setValue("metadata.skills", newSkills);
+  };
 
-    const { portfolio_section_item } = portfolioSectionItemOrError.value;
-    createPortfolioSectionItem(portfolio_section_item);
-    setOpen(false);
-    form.reset();
-  }
+  const onSubmit = async (data: CreatePortfolioSectionItemSchema) => {
+    try {
+      const portfolioSectionItemOrError = await postPortfolioSectionItem(data);
+
+      if (portfolioSectionItemOrError.isFailure()) return;
+
+      const { portfolio_section_item } = portfolioSectionItemOrError.value;
+      createPortfolioSectionItem(portfolio_section_item);
+
+      setOpen(false);
+      form.reset();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const renderTypeSpecificFields = () => {
+    switch (portfolioSection.type) {
+      case "education":
+      case "experience":
+      case "course":
+      case "certification":
+        return (
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2">
+              <label className="block text-sm font-medium mb-2">
+                Organização
+              </label>
+              <Input
+                {...form.register("metadata.organization")}
+                placeholder="Nome da instituição"
+              />
+              {form.formState.errors?.metadata?.organization && (
+                <p className="text-red-500 text-sm mt-1">
+                  {form.formState.errors?.metadata?.organization?.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Data de Início
+              </label>
+              <Controller
+                name="metadata.start_date"
+                control={form.control}
+                render={({ field }) => (
+                  <Input
+                    type="date"
+                    onChange={(value) => {
+                      const date = new Date(value.target.value);
+
+                      field.onChange(date);
+                    }}
+                  />
+                )}
+              />
+            </div>
+            <div>
+              <div className="flex items-center justify-between">
+                <label className="block text-sm font-medium mb-2">
+                  Data de Término
+                </label>
+                <div className="mb-2">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      className="form-checkbox"
+                      checked={isCurrent}
+                      onChange={(e) => {
+                        setIsCurrent(e.target.checked);
+                        if (e.target.checked) {
+                          form.setValue("metadata.end_date", null);
+                        }
+                      }}
+                    />
+                    <span className="ml-2">Atual</span>
+                  </label>
+                </div>
+              </div>
+              <Controller
+                name="metadata.end_date"
+                control={form.control}
+                render={({ field }) => (
+                  <Input
+                    type="date"
+                    disabled={isCurrent}
+                    onChange={(value) => {
+                      const date = new Date(value.target.value);
+
+                      field.onChange(date);
+                    }}
+                  />
+                )}
+              />
+            </div>
+          </div>
+        );
+
+      case "project":
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                URL do Projeto
+              </label>
+              <Input
+                {...form.register("metadata.url")}
+                placeholder="https://github.com/seu-projeto"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Habilidades
+              </label>
+              <div className="flex gap-2 mb-2">
+                <Input
+                  value={skillInput}
+                  onChange={(e) => setSkillInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleAddSkill()}
+                  placeholder="Adicionar habilidade"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleAddSkill}
+                >
+                  Adicionar
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {skills.map((skill) => (
+                  <div
+                    key={skill}
+                    className="flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm"
+                  >
+                    {skill}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSkill(skill)}
+                      className="ml-2"
+                    >
+                      <X className="h-4 w-4 text-gray-500" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+
+      case "language":
+        return (
+          <div>
+            <label className="block text-sm font-medium mb-2">Nível</label>
+            <Controller
+              name="metadata.level"
+              control={form.control}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o nível" />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                    <SelectItem value="beginner">Iniciante</SelectItem>
+                    <SelectItem value="intermediate">Intermediário</SelectItem>
+                    <SelectItem value="advanced">Avançado</SelectItem>
+                    <SelectItem value="native">Nativo</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {form.formState.errors.metadata?.level && (
+              <p className="text-red-500 text-sm mt-1">O nível é obrigatório</p>
+            )}
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="w-full" asChild>
-        <Button variant="outline" className="w-full flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Adicionar item
+      <DialogTrigger asChild>
+        <Button variant="outline" className="w-full">
+          <Plus className="mr-2 h-4 w-4" />
+          Adicionar Item
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Adicionar novo item</DialogTitle>
+          <DialogTitle>Adicionar Novo Item</DialogTitle>
         </DialogHeader>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4"
-        >
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium" htmlFor="linkTitle">
-              Título
-            </label>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">Título</label>
             <Input
-              id="linkTitle"
-              {...form.register("title")}
-              placeholder="ex: Meu Portfólio"
+              {...form.register("metadata.title")}
+              placeholder="Digite o título"
             />
-            {form.formState.errors.title && (
-              <p className="text-red-500 text-sm">
-                {form.formState.errors.title.message}
+            {form.formState.errors.metadata?.title && (
+              <p className="text-red-500 text-sm mt-1">
+                {form.formState.errors.metadata.title.message}
               </p>
             )}
           </div>
 
-          <Button
-            className="w-full bg-purple-600 hover:bg-purple-700"
-            type="submit"
-          >
-            Adicionar Link
-          </Button>
+          <div>
+            <label className="block text-sm font-medium mb-2">Descrição</label>
+            <Textarea
+              {...form.register("metadata.description")}
+              placeholder="Detalhes adicionais"
+            />
+          </div>
+
+          {renderTypeSpecificFields()}
+
+          <div className="flex justify-end gap-2">
+            <Button type="submit" autoFocus>
+              Salvar
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setOpen(false);
+                form.reset();
+              }}
+            >
+              Cancelar
+            </Button>
+          </div>
         </form>
       </DialogContent>
     </Dialog>

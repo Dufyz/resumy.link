@@ -44,7 +44,7 @@ export async function handlePostPortfolioSectionItem(
   req: Request,
   res: Response
 ) {
-  const { portfolio_id, portfolio_section_id, is_active } =
+  const { portfolio_id, portfolio_section_id, is_active, metadata } =
     req.body as unknown as z.infer<
       typeof postPortfolioSectionItemSchema
     >["body"];
@@ -55,6 +55,7 @@ export async function handlePostPortfolioSectionItem(
     portfolio_id,
     portfolio_section_id,
     is_active,
+    metadata,
   });
 
   if (portfolioSectionItemOrError.isFailure()) {
@@ -78,13 +79,13 @@ export async function handlePatchPortfolioSectionItem(
   const { id } = req.params as unknown as z.infer<
     typeof patchPortfolioSectionItemSchema
   >["params"];
-  const { is_active } = req.body as unknown as z.infer<
+  const { is_active, metadata } = req.body as unknown as z.infer<
     typeof patchPortfolioSectionItemSchema
   >["body"];
 
   const portfolioSectionItemOrError = await updatePortfolioSectionItem(
     portfolioSectionItemRepository
-  )(id, { is_active });
+  )(id, { is_active, metadata });
 
   if (portfolioSectionItemOrError.isFailure()) {
     res

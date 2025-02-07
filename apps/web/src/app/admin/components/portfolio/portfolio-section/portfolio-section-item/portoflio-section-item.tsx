@@ -1,16 +1,30 @@
 import { Switch } from "@/components/ui/switch";
-import { GripVertical, Link2, Trash2 } from "lucide-react";
+import { GripVertical, Trash2 } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { PortfolioSectionItem as PortfolioSectionItemType } from "@/types/portfolio-section-type";
+import { PortfolioSectionItem as PortfolioSectionItemType } from "@/types/portfolio-section-item-type";
+import PortfolioSectionItemEducation from "./portoflio-section-item-education";
+import PortfolioSectionItemExperience from "./portoflio-section-item-experience";
+import PortfolioSectionItemCourse from "./portoflio-section-item-course";
+import PortfolioSectionItemCertification from "./portoflio-section-item-certification";
+import usePortfolio from "@/hooks/usePortfolio";
+import {
+  deletePortfolioSectionItem as deletePortfolioSectionItemQuery,
+  patchPortfolioSectionItem,
+} from "@/queries/portfolio-section-item-queries";
+import PortfolioSectionItemProject from "./portoflio-section-item-project";
+import PortfolioSectionItemLanguage from "./portoflio-section-item-language";
 
 export function PortfolioSectionItem({
   portfolioSectionItem,
 }: {
   portfolioSectionItem: PortfolioSectionItemType;
 }) {
+  const { deletePortfolioSectionItem, updatePortfolioSectionItem } =
+    usePortfolio();
+
   const {
     attributes,
     listeners,
@@ -25,34 +39,34 @@ export function PortfolioSectionItem({
     transition,
   };
 
-  const onToggle = (collectionId: string, linkId: string) => {
-    // setSections((prev) =>
-    //   prev.map((collection) =>
-    //     collection.id === collectionId
-    //       ? {
-    //           ...collection,
-    //           links: collection.links.map((link) =>
-    //             link.id === linkId
-    //               ? { ...link, isActive: !link.isActive }
-    //               : link
-    //           ),
-    //         }
-    //       : collection
-    //   )
-    // );
+  const onToggleIsActive = async () => {
+    const isActive = !portfolioSectionItem.is_active;
+
+    updatePortfolioSectionItem(portfolioSectionItem.id, {
+      is_active: isActive,
+    });
+
+    const responseOrError = await patchPortfolioSectionItem(
+      portfolioSectionItem.id,
+      {
+        is_active: isActive,
+      }
+    );
+
+    if (responseOrError.isFailure())
+      return updatePortfolioSectionItem(portfolioSectionItem.id, {
+        is_active: !isActive,
+      });
   };
 
-  const onDelete = (collectionId: string, linkId: string) => {
-    // setSections((prev) =>
-    //   prev.map((collection) =>
-    //     collection.id === collectionId
-    //       ? {
-    //           ...collection,
-    //           links: collection.links.filter((link) => link.id !== linkId),
-    //         }
-    //       : collection
-    //   )
-    // );
+  const onDelete = async () => {
+    const responseOrError = await deletePortfolioSectionItemQuery(
+      portfolioSectionItem.id
+    );
+
+    if (responseOrError.isFailure()) return;
+
+    deletePortfolioSectionItem(portfolioSectionItem.id);
   };
 
   return (
@@ -60,32 +74,56 @@ export function PortfolioSectionItem({
       ref={setNodeRef}
       style={style}
       className={cn(
-        "group flex items-center justify-between rounded-lg border bg-card p-4",
-        isDragging && "opacity-50",
-        !portfolioSectionItem.is_active && "opacity-50"
+        "group flex items-center justify-between rounded-lg border p-4", // Estilos básicos
+        isDragging && "opacity-50", // Efeito enquanto o item está sendo arrastado
+        !portfolioSectionItem.is_active && "opacity-50", // Estilo quando inativo
+        "bg-card" // Estilo de fundo genérico que pode ser comum a todos os tipos
       )}
     >
       <div className="flex items-center gap-3">
-        <button
+        {/* <button
           {...attributes}
           {...listeners}
           className="cursor-grab touch-none"
         >
           <GripVertical className="h-5 w-5 text-muted-foreground" />
-        </button>
-        <div>
+        </button> */}
+        <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
-            <span className="font-medium">{portfolioSectionItem.title}</span>
-            <Link2 className="h-3 w-3 text-muted-foreground" />
+            <span className="font-medium">
+              {portfolioSectionItem.metadata.title}
+            </span>
           </div>
-          <a
-            href={portfolioSectionItem.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-muted-foreground hover:underline"
-          >
-            {portfolioSectionItem.url}
-          </a>
+          {portfolioSectionItem.metadata.type === "education" && (
+            <PortfolioSectionItemEducation
+              portfolioSectionItem={portfolioSectionItem}
+            />
+          )}
+          {portfolioSectionItem.metadata.type === "experience" && (
+            <PortfolioSectionItemExperience
+              portfolioSectionItem={portfolioSectionItem}
+            />
+          )}
+          {portfolioSectionItem.metadata.type === "course" && (
+            <PortfolioSectionItemCourse
+              portfolioSectionItem={portfolioSectionItem}
+            />
+          )}
+          {portfolioSectionItem.metadata.type === "certification" && (
+            <PortfolioSectionItemCertification
+              portfolioSectionItem={portfolioSectionItem}
+            />
+          )}
+          {portfolioSectionItem.metadata.type === "project" && (
+            <PortfolioSectionItemProject
+              portfolioSectionItem={portfolioSectionItem}
+            />
+          )}
+          {portfolioSectionItem.metadata.type === "language" && (
+            <PortfolioSectionItemLanguage
+              portfolioSectionItem={portfolioSectionItem}
+            />
+          )}
         </div>
       </div>
       <div className="flex items-center gap-2">
@@ -95,7 +133,7 @@ export function PortfolioSectionItem({
 
         <Switch
           checked={portfolioSectionItem.is_active}
-          onCheckedChange={onToggle}
+          onCheckedChange={onToggleIsActive}
         />
       </div>
     </div>

@@ -103,34 +103,15 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
 
     if (!portfolio) return;
 
-    const portfolioSection = (portfolio.portfolio_sections || []).find(
-      (s) => s.id === body.portfolio_section_id
-    );
-
-    if (!portfolioSection) return;
-
-    const updatedSectionItems = [
-      ...(portfolioSection.portfolio_section_items || []),
+    const updatePortfolioSectionItems = [
+      ...(portfolio.portfolio_section_items || []),
       body,
     ];
-
-    const updatedPortfolioSections = (portfolio.portfolio_sections || []).map(
-      (s) => {
-        if (s.id === body.portfolio_section_id) {
-          return {
-            ...s,
-            portfolio_section_items: updatedSectionItems,
-          };
-        }
-
-        return s;
-      }
-    );
 
     set({
       portfolio: {
         ...portfolio,
-        portfolio_sections: updatedPortfolioSections,
+        portfolio_section_items: updatePortfolioSectionItems,
       },
     });
   },
@@ -140,33 +121,20 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
 
     if (!portfolio) return;
 
-    const portfolioSection = (portfolio.portfolio_sections || []).find(
-      (s) => s.id === id
-    );
-
-    if (!portfolioSection) return;
-
-    const updatedSectionItems = (
-      portfolioSection.portfolio_section_items || []
-    ).map((i) => (i.id === id ? { ...i, ...body } : i));
-
-    const updatedPortfolioSections = (portfolio.portfolio_sections || []).map(
-      (s) => {
-        if (s.id === id) {
-          return {
-            ...s,
-            portfolio_section_items: updatedSectionItems,
-          };
-        }
-
-        return s;
+    const portfolioSectionItems: PortfolioSectionItem[] = (
+      portfolio.portfolio_section_items || []
+    ).map((i) => {
+      if (i.id === id) {
+        return { ...i, ...body };
       }
-    );
+
+      return i;
+    });
 
     set({
       portfolio: {
         ...portfolio,
-        portfolio_sections: updatedPortfolioSections,
+        portfolio_section_items: portfolioSectionItems,
       },
     });
   },
@@ -176,21 +144,14 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
 
     if (!portfolio) return;
 
-    const updatedPortfolioSections = (portfolio.portfolio_sections || []).map(
-      (s) => {
-        return {
-          ...s,
-          portfolio_section_items: (s.portfolio_section_items || []).filter(
-            (i) => i.id !== id
-          ),
-        };
-      }
-    );
+    const updatedPortfolioSections = (
+      portfolio.portfolio_section_items || []
+    ).filter((i) => i.id !== id);
 
     set({
       portfolio: {
         ...portfolio,
-        portfolio_sections: updatedPortfolioSections,
+        portfolio_section_items: updatedPortfolioSections,
       },
     });
   },

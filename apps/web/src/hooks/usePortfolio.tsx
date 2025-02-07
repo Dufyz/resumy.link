@@ -23,14 +23,22 @@ export default function usePortfolio() {
   const createPortfolioSectionItem = usePortfolioStore(
     (state) => state.createPortfolioSectionItem
   );
+  const updatePortfolioSectionItem = usePortfolioStore(
+    (state) => state.updatePortfolioSectionItem
+  );
+  const deletePortfolioSectionItem = usePortfolioStore(
+    (state) => state.deletePortfolioSectionItem
+  );
 
   return {
     portfolio,
     setPortfolio,
     updatePortfolio,
     createPortfolioSection,
-    createPortfolioSectionItem,
     updatePortfolioSection,
     deletePortfolioSection,
+    createPortfolioSectionItem,
+    updatePortfolioSectionItem,
+    deletePortfolioSectionItem,
   };
 }
