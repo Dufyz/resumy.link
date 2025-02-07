@@ -1,10 +1,5 @@
+import { isMetadataOfType } from "@/lib/utils/isMetadataOfType";
 import { PortfolioSectionItem } from "@/types/portfolio-section-item-type";
-
-function isCourseMetadata(
-  metadata: PortfolioSectionItem["metadata"]
-): metadata is Extract<PortfolioSectionItem["metadata"], { type: "course" }> {
-  return metadata.type === "course";
-}
 
 export default function PortfolioSectionItemCourse({
   portfolioSectionItem,
@@ -13,7 +8,7 @@ export default function PortfolioSectionItemCourse({
 }) {
   const { metadata } = portfolioSectionItem;
 
-  if (!isCourseMetadata(metadata)) return null;
+  if (!isMetadataOfType(metadata, "course")) return null;
 
   return (
     <div>

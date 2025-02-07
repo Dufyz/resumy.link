@@ -1,10 +1,5 @@
+import { isMetadataOfType } from "@/lib/utils/isMetadataOfType";
 import { PortfolioSectionItem } from "@/types/portfolio-section-item-type";
-
-function isLanguageMetadata(
-  metadata: PortfolioSectionItem["metadata"]
-): metadata is Extract<PortfolioSectionItem["metadata"], { type: "language" }> {
-  return metadata.type === "language";
-}
 
 export default function PortfolioSectionItemLanguage({
   portfolioSectionItem,
@@ -13,7 +8,7 @@ export default function PortfolioSectionItemLanguage({
 }) {
   const { metadata } = portfolioSectionItem;
 
-  if (!isLanguageMetadata(metadata)) return null;
+  if (!isMetadataOfType(metadata, "language")) return null;
 
   return (
     <div className="flex flex-col gap-2">

@@ -88,9 +88,8 @@ export function CreatePortfolioSectionModal({
             <label className="text-sm font-medium">Categoria de Seção</label>
             <Select
               onValueChange={(value) => {
-                const selectedType = PORTFOLIO_SECTION_TYPES.find(
-                  (type) => type.value === value
-                );
+                const selectedType = PORTFOLIO_SECTION_TYPES[value];
+
                 if (selectedType) {
                   form.setValue("title", selectedType.label);
                   form.setValue(
@@ -106,11 +105,14 @@ export function CreatePortfolioSectionModal({
                 <SelectValue placeholder="Selecione o tipo" />
               </SelectTrigger>
               <SelectContent defaultValue={"Educa"}>
-                {PORTFOLIO_SECTION_TYPES.map((type, index) => (
-                  <SelectItem key={index} value={type.value}>
-                    {type.label}
-                  </SelectItem>
-                ))}
+                {Object.keys(PORTFOLIO_SECTION_TYPES).map((key) => {
+                  const type = PORTFOLIO_SECTION_TYPES[key];
+                  return (
+                    <SelectItem key={key} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  );
+                })}
               </SelectContent>
             </Select>
           </div>

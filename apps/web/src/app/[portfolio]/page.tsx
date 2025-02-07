@@ -1,41 +1,59 @@
-import LinkSection from "@/app/[user]/components/link-section";
-import Profile from "@/app/[user]/components/profile";
-import {
-  Briefcase,
-  Code,
-  User,
-  GraduationCap,
-  Trophy,
-  Globe,
-} from "lucide-react";
+import PortfolioSection from "@/app/[portfolio]/components/portfolio-section";
+import PortfolioProfile from "@/app/[portfolio]/components/portfolio-profile";
+import { getPortfolioByUsername } from "@/queries/portfolio-queries";
+import { Briefcase, Code, GraduationCap, Trophy } from "lucide-react";
+import NotFoundPage from "./not-found-page";
+import { getPortfolioSectionsByPortfolioId } from "@/queries/portfolio-section-queries";
+import { getPortfolioSectionItemsByPortfolioId } from "@/queries/portfolio-section-item-queries";
 
-export default function UserPage() {
+export default async function PortfolioPage({
+  params,
+}: {
+  params: Promise<{
+    portfolio: string;
+  }>;
+}) {
+  const { portfolio: portfolioUsername } = await params;
+
+  const portfolioOrError = await getPortfolioByUsername(portfolioUsername);
+
+  if (portfolioOrError.isFailure()) return <NotFoundPage />;
+
+  const { portfolio } = portfolioOrError.value;
+
+  const [portfolioSectionsOrError, portfolioSectionItemsOrError] =
+    await Promise.all([
+      getPortfolioSectionsByPortfolioId(portfolio.id),
+      getPortfolioSectionItemsByPortfolioId(portfolio.id),
+    ]);
+
+  if (portfolioSectionsOrError.isFailure()) return;
+  if (portfolioSectionItemsOrError.isFailure()) return;
+
+  const { portfolio_sections } = portfolioSectionsOrError.value;
+  const { portfolio_section_items } = portfolioSectionItemsOrError.value;
+
+  portfolio.portfolio_sections = portfolio_sections.map((section) => {
+    section.portfolio_section_items = portfolio_section_items.filter(
+      (item) => item.portfolio_section_id === section.id
+    );
+
+    return section;
+  });
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white px-4 py-8 lg:py-12 flex flex-col items-center">
       <div className="w-full max-w-6xl flex flex-col lg:flex-row lg:items-start lg:gap-8">
         <div className="lg:sticky lg:top-8 lg:w-1/4 mb-8 lg:mb-0">
-          <Profile
-            name="John Doe"
-            title="Senior Software Engineer"
-            image="/placeholder.svg"
-          />
+          <PortfolioProfile portfolio={portfolio} />
         </div>
-        <div className="w-full lg:w-3/4 space-y-6">
-          <LinkSection
-            icon={<User className="w-5 h-5" />}
-            title="About Me"
-            items={[
-              {
-                main: true,
-                title: "Full-stack Developer",
-                subtitle: "5+ years of experience",
-                content:
-                  "Passionate about building scalable web applications with clean code and great UX.",
-              },
-            ]}
-          />
-
-          <LinkSection
+        <div className="w-full lg:w-3/4 flex flex-col gap-6">
+          {portfolio.portfolio_sections?.map((section, index) => (
+            <PortfolioSection key={index} portfolioSection={section} />
+          ))}
+        </div>
+        {/* <div className="w-full lg:w-3/4 space-y-6">
+          <PortfolioLinkSection
             icon={<Code className="w-5 h-5" />}
             title="Projects"
             items={[
@@ -60,7 +78,7 @@ export default function UserPage() {
             ]}
           />
 
-          <LinkSection
+          <PortfolioLinkSection
             icon={<Briefcase className="w-5 h-5" />}
             title="Experience"
             items={[
@@ -79,7 +97,7 @@ export default function UserPage() {
             ]}
           />
 
-          <LinkSection
+          <PortfolioLinkSection
             icon={<GraduationCap className="w-5 h-5" />}
             title="Education"
             items={[
@@ -98,7 +116,7 @@ export default function UserPage() {
             ]}
           />
 
-          <LinkSection
+          <PortfolioLinkSection
             icon={<Trophy className="w-5 h-5" />}
             title="Certifications"
             items={[
@@ -114,29 +132,7 @@ export default function UserPage() {
               },
             ]}
           />
-
-          <LinkSection
-            icon={<Globe className="w-5 h-5" />}
-            title="Connect"
-            items={[
-              {
-                main: true,
-                title: "GitHub",
-                link: "https://github.com",
-              },
-              {
-                main: false,
-                title: "LinkedIn",
-                link: "https://linkedin.com",
-              },
-              {
-                main: false,
-                title: "Email",
-                link: "mailto:contact@example.com",
-              },
-            ]}
-          />
-        </div>
+        </div> */}
       </div>
     </main>
   );

@@ -1,10 +1,5 @@
+import { isMetadataOfType } from "@/lib/utils/isMetadataOfType";
 import { PortfolioSectionItem } from "@/types/portfolio-section-item-type";
-
-function isProjectMetadata(
-  metadata: PortfolioSectionItem["metadata"]
-): metadata is Extract<PortfolioSectionItem["metadata"], { type: "project" }> {
-  return metadata.type === "project";
-}
 
 export default function PortfolioSectionItemProject({
   portfolioSectionItem,
@@ -13,7 +8,7 @@ export default function PortfolioSectionItemProject({
 }) {
   const { metadata } = portfolioSectionItem;
 
-  if (!isProjectMetadata(metadata)) return null;
+  if (!isMetadataOfType(metadata, "project")) return null;
 
   return (
     <div className="flex flex-col gap-2">

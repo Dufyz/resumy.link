@@ -60,7 +60,7 @@ export async function getPortfolioByUsername(username: string): Promise<
   >
 > {
   try {
-    const response = await api.get(`/portfolios/name/${username}`);
+    const response = await api.get(`/portfolios/username/${username}`);
 
     return success(response.data);
   } catch (error: any) {

@@ -22,7 +22,7 @@ export function PortfolioProfile({ portfolio }: { portfolio: Portfolio }) {
           <div className="flex flex-col gap-1">
             <h2 className="text-2xl font-semibold">{portfolio.title}</h2>
             <p className="text-sm text-muted-foreground">{portfolio.bio}</p>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               {portfolio.metadata?.links.map((link, index) => {
                 return (
                   <a

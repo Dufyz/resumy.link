@@ -7,9 +7,9 @@ import { LayoutGrid, Trash2 } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { AnimatePresence, motion } from "framer-motion";
-import { PortfolioSectionItem } from "./portfolio-section-item/portoflio-section-item";
+import { PortfolioSectionItem } from "../portfolio-section-item/portoflio-section-item";
 import { cn } from "@/lib/utils";
-import { CreatePortfolioSectionItemModal } from "./portfolio-section-item/create-portfolio-section-item-modal";
+import { CreatePortfolioSectionItemModal } from "../portfolio-section-item/create-portfolio-section-item-modal";
 import { PortfolioSection as PortfolioSectionType } from "@/types/portfolio-section-type";
 import {
   patchPortfolioSection,
@@ -60,9 +60,7 @@ export function PortfolioSection({
     deletePortfolioSection(portfolioSection.id);
   };
 
-  const Icon = PORTFOLIO_SECTION_TYPES.find(
-    (type) => type.value === portfolioSection.type
-  )?.icon as ForwardRefExoticComponent<IconProps & RefAttributes<Icon>>;
+  const Icon = PORTFOLIO_SECTION_TYPES[portfolioSection.type].icon;
 
   return (
     <motion.div

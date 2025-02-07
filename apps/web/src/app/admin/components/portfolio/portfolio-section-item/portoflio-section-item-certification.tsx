@@ -1,13 +1,5 @@
+import { isMetadataOfType } from "@/lib/utils/isMetadataOfType";
 import { PortfolioSectionItem } from "@/types/portfolio-section-item-type";
-
-function isCertificationMetadata(
-  metadata: PortfolioSectionItem["metadata"]
-): metadata is Extract<
-  PortfolioSectionItem["metadata"],
-  { type: "certification" }
-> {
-  return metadata.type === "certification";
-}
 
 export default function PortfolioSectionItemCertification({
   portfolioSectionItem,
@@ -16,7 +8,7 @@ export default function PortfolioSectionItemCertification({
 }) {
   const { metadata } = portfolioSectionItem;
 
-  if (!isCertificationMetadata(metadata)) return null;
+  if (!isMetadataOfType(metadata, "certification")) return null;
 
   return (
     <div>
