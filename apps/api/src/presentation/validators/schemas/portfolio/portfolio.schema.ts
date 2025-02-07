@@ -2,7 +2,7 @@ import z from "zod";
 
 export const portfolioSchema = z.object({
   id: z.coerce.number(),
-  user_id: z.number(),
+  user_id: z.coerce.number(),
   username: z
     .string()
     .min(3, "O nome de usuário deve ter pelo menos 3 caracteres")
@@ -17,6 +17,24 @@ export const portfolioSchema = z.object({
     .max(50, "O título deve ter menos de 50 caracteres"),
   bio: z.string().trim().nullable(),
   avatar_path: z.string().nullable(),
-  created_at: z.date(),
-  updated_at: z.date(),
+  metadata: z
+    .object({
+      links: z.array(
+        z.object({
+          type: z.enum([
+            "instagram",
+            "linkedin",
+            "twitter",
+            "tiktok",
+            "youtube",
+            "github",
+            "website",
+          ]),
+          url: z.string().url("URL inválida"),
+        })
+      ),
+    })
+    .nullable(),
+  created_at: z.coerce.date(),
+  updated_at: z.coerce.date(),
 });

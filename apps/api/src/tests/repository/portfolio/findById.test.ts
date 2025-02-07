@@ -56,6 +56,7 @@ describe("Portfolio repository - Find by id", () => {
       title: basePortfolio.title,
       bio: basePortfolio.bio,
       avatar_path: basePortfolio.avatar_path,
+      metadata: null,
       created_at: expect.any(Date),
       updated_at: expect.any(Date),
     });

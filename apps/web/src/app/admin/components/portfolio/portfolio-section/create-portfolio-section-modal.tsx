@@ -15,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -85,22 +84,6 @@ export function CreatePortfolioSectionModal({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4"
         >
-          {/* <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium" htmlFor="sectionTitle">
-              Título da Seção
-            </label>
-            <Input
-              id="sectionTitle"
-              {...form.register("title")}
-              placeholder="ex: Mídias Sociais, Projetos, Contato"
-              disabled={isSubmitting || true}
-            />
-            {form.formState.errors.title && (
-              <p className="text-red-500 text-sm">
-                {form.formState.errors.title.message}
-              </p>
-            )}
-          </div> */}
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium">Categoria de Seção</label>
             <Select
@@ -131,16 +114,9 @@ export function CreatePortfolioSectionModal({
               </SelectContent>
             </Select>
           </div>
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium">Ativar Seção</label>
-            <Switch
-              checked={form.watch("is_active")}
-              onCheckedChange={(value) => form.setValue("is_active", value)}
-              disabled={isSubmitting}
-            />
-          </div>
+
           <Button
-            className={cn("w-full bg-purple-600 hover:bg-purple-700", {
+            className={cn("w-full", {
               "cursor-not-allowed opacity-70": isSubmitting,
             })}
             type="submit"

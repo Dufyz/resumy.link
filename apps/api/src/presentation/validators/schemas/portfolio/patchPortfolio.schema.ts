@@ -7,9 +7,11 @@ export const patchPortfolioSchema = z.object({
   }),
   body: portfolioSchema
     .pick({
+      username: true,
       title: true,
       bio: true,
       avatar_path: true,
+      metadata: true,
     })
     .partial(),
 });

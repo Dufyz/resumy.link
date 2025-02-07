@@ -26,28 +26,38 @@ export function PortfolioSection({
   portfolioSection: PortfolioSectionType;
   dragId: string;
 }) {
-  const [isDragging, setIsDragging] = useState(false);
+  const { updatePortfolioSection, deletePortfolioSection } = usePortfolio();
+
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: dragId });
 
-  const { updatePortfolioSection, deletePortfolioSection } = usePortfolio();
+  const [isDragging, setIsDragging] = useState(false);
 
-  const toggleCollection = () => {
+  const onToggleIsActive = async () => {
     const isActive = !portfolioSection.is_active;
 
     updatePortfolioSection(portfolioSection.id, {
       is_active: isActive,
     });
 
-    patchPortfolioSection(portfolioSection.id, {
+    const responseOrError = await patchPortfolioSection(portfolioSection.id, {
       is_active: isActive,
     });
+
+    if (responseOrError.isFailure())
+      return updatePortfolioSection(portfolioSection.id, {
+        is_active: !isActive,
+      });
   };
 
-  const deleteCollection = () => {
-    deletePortfolioSection(portfolioSection.id);
+  const onDelete = async () => {
+    const responseOrError = await deletePortfolioSectionQuery(
+      portfolioSection.id
+    );
 
-    deletePortfolioSectionQuery(portfolioSection.id);
+    if (responseOrError.isFailure()) return;
+
+    deletePortfolioSection(portfolioSection.id);
   };
 
   const Icon = PORTFOLIO_SECTION_TYPES.find(
@@ -97,12 +107,12 @@ export function PortfolioSection({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={deleteCollection}>
+            <Button variant="ghost" size="icon" onClick={onDelete}>
               <Trash2 className="h-4 w-4 text-destructive" />
             </Button>
             <Switch
               checked={portfolioSection.is_active}
-              onCheckedChange={toggleCollection}
+              onCheckedChange={onToggleIsActive}
             />
           </div>
         </div>
@@ -128,7 +138,7 @@ export function PortfolioSection({
           </div>
         </AnimatePresence>
 
-        <CreatePortfolioSectionItemModal />
+        <CreatePortfolioSectionItemModal portfolioSection={portfolioSection} />
       </div>
     </motion.div>
   );

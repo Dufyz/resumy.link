@@ -161,14 +161,15 @@ export async function handlePatchPortfolio(req: Request, res: Response) {
   const { id } = req.params as unknown as z.infer<
     typeof patchPortfolioSchema
   >["params"];
-  const { title, bio, avatar_path } = req.body as unknown as z.infer<
-    typeof patchPortfolioSchema
-  >["body"];
+  const { username, title, bio, avatar_path, metadata } =
+    req.body as unknown as z.infer<typeof patchPortfolioSchema>["body"];
 
   const portfolioOrError = await updatePortfolio(portfolioRepository)(id, {
+    username,
     title,
     bio,
     avatar_path,
+    metadata,
   });
 
   if (portfolioOrError.isFailure()) {

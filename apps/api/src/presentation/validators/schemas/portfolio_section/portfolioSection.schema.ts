@@ -1,18 +1,18 @@
 import z from "zod";
 
 export const portfolioSectionSchema = z.object({
-  id: z.number(),
-  portfolio_id: z.number(),
+  id: z.coerce.number(),
+  portfolio_id: z.coerce.number(),
   is_active: z.boolean(),
   type: z.enum([
     "education",
     "experience",
-    "project",
     "certification",
+    "course",
+    "project",
     "language",
-    "social",
   ]),
   title: z.string(),
-  created_at: z.date(),
-  updated_at: z.date(),
+  created_at: z.coerce.date(),
+  updated_at: z.coerce.date(),
 });

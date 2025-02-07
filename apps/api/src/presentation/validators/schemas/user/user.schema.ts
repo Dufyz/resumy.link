@@ -10,6 +10,6 @@ export const userSchema = z.object({
     .string()
     .email("Digite um email válido")
     .min(1, "Email é obrigatório"),
-  created_at: z.date(),
-  updated_at: z.date(),
+  created_at: z.coerce.date(),
+  updated_at: z.coerce.date(),
 });

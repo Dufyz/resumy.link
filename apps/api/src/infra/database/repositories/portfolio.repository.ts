@@ -16,6 +16,7 @@ export const portfolioRepository: PortfolioRepository = {
           p.title,
           p.bio,
           p.avatar_path,
+          p.metadata,
           p.created_at,
           p.updated_at
         FROM portfolios p
@@ -39,6 +40,7 @@ export const portfolioRepository: PortfolioRepository = {
           p.title,
           p.bio,
           p.avatar_path,
+          p.metadata,
           p.created_at,
           p.updated_at
         FROM portfolios p
@@ -62,6 +64,7 @@ export const portfolioRepository: PortfolioRepository = {
           p.title,
           p.bio,
           p.avatar_path,
+          p.metadata,
           p.created_at,
           p.updated_at
         FROM portfolios p
@@ -108,7 +111,7 @@ export const portfolioRepository: PortfolioRepository = {
 
       const [portfolio] = await sql`
         INSERT INTO portfolios ${sql(portfolioToCreate, colsToInsert)}
-        RETURNING id, user_id, username, title, bio, avatar_path, created_at, updated_at
+        RETURNING id, user_id, username, title, bio, avatar_path, metadata, created_at, updated_at
       `;
 
       return success(parsePortfolioFromDB(portfolio as Portfolio));
@@ -119,11 +122,21 @@ export const portfolioRepository: PortfolioRepository = {
   update: async (id, body) => {
     try {
       const portfolioToUpdate: Partial<
-        Pick<Portfolio, "title" | "bio" | "avatar_path" | "updated_at">
+        Pick<
+          Portfolio,
+          | "username"
+          | "title"
+          | "bio"
+          | "avatar_path"
+          | "metadata"
+          | "updated_at"
+        >
       > = filterObjNullishValues({
+        username: body.username,
         title: body.title,
         bio: body.bio,
         avatar_path: body.avatar_path,
+        metadata: body.metadata,
         updated_at: new Date(),
       });
 
@@ -135,7 +148,7 @@ export const portfolioRepository: PortfolioRepository = {
         UPDATE portfolios
         SET ${sql(portfolioToUpdate, colsToUpdate)}
         WHERE id = ${id}
-        RETURNING id, user_id, username, title, bio, avatar_path, created_at, updated_at
+        RETURNING id, user_id, username, title, bio, avatar_path, metadata, created_at, updated_at
       `;
 
       return success(parsePortfolioFromDB(portfolio as Portfolio));

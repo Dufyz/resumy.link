@@ -21,6 +21,8 @@ export type PortfolioRepository = {
   ): Promise<Either<RepositoryErrors, Portfolio>>;
   update(
     id: number,
-    body: Partial<Pick<Portfolio, "title" | "bio" | "avatar_path">>
+    body: Partial<
+      Pick<Portfolio, "username" | "title" | "bio" | "avatar_path" | "metadata">
+    >
   ): Promise<Either<RepositoryErrors, Portfolio>>;
 };
