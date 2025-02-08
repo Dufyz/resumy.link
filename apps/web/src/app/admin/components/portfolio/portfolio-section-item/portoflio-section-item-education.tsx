@@ -11,11 +11,11 @@ export default function PortfolioSectionItemEducation({
   if (!isMetadataOfType(metadata, "education")) return null;
 
   return (
-    <div>
-      <div className="flex gap-2">
-        <p>{metadata.organization}</p>
+    <div className="">
+      <div className="flex items-center gap-2 text-gray-700">
+        <p className="font-semibold">{metadata.organization}</p>
         <span>•</span>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           <p>{new Date(metadata.start_date).getFullYear()}</p>
           <span>-</span>
           <p>
@@ -25,7 +25,7 @@ export default function PortfolioSectionItemEducation({
           </p>
         </div>
       </div>
-      <div>
+      <div className="mt-2 text-gray-600">
         <p>{metadata.description}</p>
       </div>
     </div>

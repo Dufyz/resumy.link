@@ -1,7 +1,5 @@
 import { Switch } from "@/components/ui/switch";
-import { GripVertical, Trash2 } from "lucide-react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { PortfolioSectionItem as PortfolioSectionItemType } from "@/types/portfolio-section-item-type";
@@ -24,20 +22,6 @@ export function PortfolioSectionItem({
 }) {
   const { deletePortfolioSectionItem, updatePortfolioSectionItem } =
     usePortfolio();
-
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: portfolioSectionItem.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
 
   const onToggleIsActive = async () => {
     const isActive = !portfolioSectionItem.is_active;
@@ -71,11 +55,9 @@ export function PortfolioSectionItem({
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
       className={cn(
         "group flex items-center justify-between rounded-lg border p-4", // Estilos básicos
-        isDragging && "opacity-50", // Efeito enquanto o item está sendo arrastado
+        // isDragging && "opacity-50", // Efeito enquanto o item está sendo arrastado
         !portfolioSectionItem.is_active && "opacity-50", // Estilo quando inativo
         "bg-card" // Estilo de fundo genérico que pode ser comum a todos os tipos
       )}

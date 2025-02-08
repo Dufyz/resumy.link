@@ -15,7 +15,11 @@ export const portfolioSchema = z.object({
     .string()
     .min(2, "O título deve ter pelo menos 2 caracteres")
     .max(50, "O título deve ter menos de 50 caracteres"),
-  bio: z.string().trim().nullish(),
+  bio: z
+    .string()
+    .max(120, "A biografia deve ter menos de 120 caracteres")
+    .trim()
+    .nullish(),
   avatar_path: z.string().nullish(),
   metadata: z
     .object({

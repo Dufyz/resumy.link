@@ -43,7 +43,7 @@ export default function PortfolioSection({
             }`}
           />
         </div>
-        {!isExpanded && (
+        {!isExpanded && mainPortfolioSectionItem && (
           <>
             {portfolioSection.type === "education" && (
               <PortfolioSectionItemEducation

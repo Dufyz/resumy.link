@@ -4,7 +4,7 @@ export type PortfolioSectionType =
   | "project"
   | "certification"
   | "language"
-  | "social";
+  | "course";
 
 export type PortfolioSection = {
   id: number;
@@ -12,6 +12,7 @@ export type PortfolioSection = {
   is_active: boolean;
   type: PortfolioSectionType;
   title: string;
+  index: number;
   created_at: Date;
   updated_at: Date;
 };

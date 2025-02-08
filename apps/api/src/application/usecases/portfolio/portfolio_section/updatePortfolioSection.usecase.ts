@@ -7,7 +7,9 @@ export const updatePortfolioSection =
   (portfolioSectionRepository: PortfolioSectionRepository) =>
   async (
     id: number,
-    body: Partial<Pick<PortfolioSection, "type" | "is_active" | "title">>
+    body: Partial<
+      Pick<PortfolioSection, "type" | "is_active" | "title" | "index">
+    >
   ): Promise<Either<RepositoryErrors, PortfolioSection>> => {
     const portfolioSectionOrError = await portfolioSectionRepository.update(
       id,
@@ -15,6 +17,7 @@ export const updatePortfolioSection =
         type: body.type,
         is_active: body.is_active,
         title: body.title,
+        index: body.index,
       }
     );
 

@@ -1,11 +1,8 @@
 "use client";
 
-import { ForwardRefExoticComponent, RefAttributes, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { LayoutGrid, Trash2 } from "lucide-react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { PortfolioSectionItem } from "../portfolio-section-item/portoflio-section-item";
 import { cn } from "@/lib/utils";
@@ -17,21 +14,31 @@ import {
 } from "@/queries/portfolio-section-queries";
 import usePortfolio from "@/hooks/usePortfolio";
 import { PORTFOLIO_SECTION_TYPES } from "@/app/admin/data/portfolio-section-types-data";
-import { Icon, IconProps } from "@tabler/icons-react";
+import { useDraggable } from "@dnd-kit/core";
+import { IconGripVertical } from "@tabler/icons-react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 export function PortfolioSection({
   portfolioSection,
-  dragId,
 }: {
   portfolioSection: PortfolioSectionType;
-  dragId: string;
 }) {
   const { updatePortfolioSection, deletePortfolioSection } = usePortfolio();
 
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: dragId });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: portfolioSection.id });
 
-  const [isDragging, setIsDragging] = useState(false);
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   const onToggleIsActive = async () => {
     const isActive = !portfolioSection.is_active;
@@ -71,33 +78,26 @@ export function PortfolioSection({
       transition={{ duration: 0.2 }}
     >
       <div
+        style={style}
         ref={setNodeRef}
-        style={{
-          transform: CSS.Transform.toString(transform),
-          transition,
-        }}
+        {...attributes}
         className={cn(
           "transition-shadow duration-200 flex flex-col gap-4 rounded-xl border bg-card p-6 shadow-sm hover:shadow-md",
           {
-            "shadow-lg": isDragging,
-            "opacity-50": !portfolioSection.is_active,
+            "opacity-50": !portfolioSection.is_active || isDragging,
           }
         )}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {/* TODO: Button quebra tudo */}
-            {/* <button
-              {...attributes}
+            <button
               {...listeners}
               className="cursor-grab touch-none active:cursor-grabbing"
-              onMouseDown={() => setIsDragging(true)}
-              onMouseUp={() => setIsDragging(false)}
             >
-              <GripVertical className="h-5 w-5 text-muted-foreground" />
-            </button> */}
+              <IconGripVertical className="h-5 w-5 text-muted-foreground" />
+            </button>
             <div className="flex items-center gap-2">
-              <Icon className="h-5 w-5 text-primary" />
+              <Icon />
               <h3 className="font-semibold">{portfolioSection.title}</h3>
               <span className="text-sm text-muted-foreground">
                 {portfolioSection.portfolio_section_items?.length} itens

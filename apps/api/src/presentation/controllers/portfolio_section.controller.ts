@@ -66,7 +66,7 @@ export async function handlePatchPortfolioSection(req: Request, res: Response) {
   const { id } = req.params as unknown as z.infer<
     typeof patchPortfolioSectionSchema
   >["params"];
-  const { type, is_active, title } = req.body as unknown as z.infer<
+  const { type, is_active, title, index } = req.body as unknown as z.infer<
     typeof patchPortfolioSectionSchema
   >["body"];
 
@@ -76,6 +76,7 @@ export async function handlePatchPortfolioSection(req: Request, res: Response) {
     type,
     is_active,
     title,
+    index,
   });
 
   if (portfolioSectionOrError.isFailure()) {

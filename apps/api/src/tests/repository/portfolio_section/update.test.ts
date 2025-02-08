@@ -68,6 +68,7 @@ describe("Portfolio Section repository - Update", () => {
         type: "experience" as PortfolioSectionType,
         is_active: false,
         title: "title_updated",
+        index: 200,
       }
     );
 
@@ -78,6 +79,7 @@ describe("Portfolio Section repository - Update", () => {
       type: "experience",
       title: "title_updated",
       is_active: false,
+      index: 200,
       created_at: expect.any(Date),
       updated_at: expect.any(Date),
     });

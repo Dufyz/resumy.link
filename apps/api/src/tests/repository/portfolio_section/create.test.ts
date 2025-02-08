@@ -68,6 +68,7 @@ describe("Portfolio Section repository - Create", () => {
       is_active: baseSection.is_active,
       type: baseSection.type,
       title: baseSection.title,
+      index: 100,
       created_at: expect.any(Date),
       updated_at: expect.any(Date),
     });

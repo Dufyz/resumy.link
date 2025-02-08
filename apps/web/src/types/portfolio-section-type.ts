@@ -14,6 +14,7 @@ export type PortfolioSection = {
   is_active: boolean;
   title: string;
   type: PortfolioSectionType;
+  index: number;
   created_at: Date;
   updated_at: Date;
 

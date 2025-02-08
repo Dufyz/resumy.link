@@ -13,6 +13,7 @@ export const portfolioSectionSchema = z.object({
     "language",
     "course",
   ]),
+  index: z.coerce.number(),
   created_at: z.coerce.date(),
   updated_at: z.coerce.date(),
 });
@@ -30,6 +31,7 @@ export const updatePortfolioSectionSchema = portfolioSectionSchema
     is_active: true,
     title: true,
     type: true,
+    index: true,
   })
   .partial();
 

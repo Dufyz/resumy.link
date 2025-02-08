@@ -13,6 +13,7 @@ export const portfolioSectionSchema = z.object({
     "language",
   ]),
   title: z.string(),
+  index: z.coerce.number(),
   created_at: z.coerce.date(),
   updated_at: z.coerce.date(),
 });

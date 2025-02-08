@@ -160,8 +160,9 @@ export function UpdatePortfolioModal({ portfolio }: { portfolio: Portfolio }) {
                   <Textarea
                     id="bio"
                     {...form.register("bio")}
-                    className={cn(errors.bio && "border-red-300")}
+                    className={cn(errors.bio && "border-red-300 resize-none")}
                     disabled={isSubmitting}
+                    maxLength={120}
                   />
                   {errors.bio && (
                     <p className="text-sm text-red-500">{errors.bio.message}</p>

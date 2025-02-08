@@ -8,6 +8,7 @@ export const parsePortfolioSectionFromDB = (
   is_active: section.is_active,
   type: section.type,
   title: section.title,
+  index: section.index,
   created_at: section.created_at,
   updated_at: section.updated_at,
 });

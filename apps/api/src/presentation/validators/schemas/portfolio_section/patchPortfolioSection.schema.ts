@@ -6,6 +6,6 @@ export const patchPortfolioSectionSchema = z.object({
     id: z.coerce.number(),
   }),
   body: portfolioSectionSchema
-    .pick({ type: true, is_active: true, title: true })
+    .pick({ type: true, is_active: true, title: true, index: true })
     .partial(),
 });

@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
             is_active BOOLEAN DEFAULT TRUE,
             type VARCHAR(255) NOT NULL,
             title VARCHAR(255) NOT NULL,
+            index INT NOT NULL DEFAULT 100,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW()
         );    

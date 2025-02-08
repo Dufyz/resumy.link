@@ -1,10 +1,10 @@
 import PortfolioSection from "@/app/[portfolio]/components/portfolio-section";
 import PortfolioProfile from "@/app/[portfolio]/components/portfolio-profile";
 import { getPortfolioByUsername } from "@/queries/portfolio-queries";
-import { Briefcase, Code, GraduationCap, Trophy } from "lucide-react";
 import NotFoundPage from "./not-found-page";
 import { getPortfolioSectionsByPortfolioId } from "@/queries/portfolio-section-queries";
 import { getPortfolioSectionItemsByPortfolioId } from "@/queries/portfolio-section-item-queries";
+import { sortPortfolioSections } from "../../lib/utils/useSortPortfolioSections";
 
 export default async function PortfolioPage({
   params,
@@ -33,13 +33,17 @@ export default async function PortfolioPage({
   const { portfolio_sections } = portfolioSectionsOrError.value;
   const { portfolio_section_items } = portfolioSectionItemsOrError.value;
 
-  portfolio.portfolio_sections = portfolio_sections.map((section) => {
-    section.portfolio_section_items = portfolio_section_items.filter(
-      (item) => item.portfolio_section_id === section.id
-    );
+  portfolio.portfolio_sections = sortPortfolioSections(
+    portfolio_sections
+      .filter((section) => section.is_active)
+      .map((section) => {
+        section.portfolio_section_items = portfolio_section_items.filter(
+          (item) => item.portfolio_section_id === section.id && item.is_active
+        );
 
-    return section;
-  });
+        return section;
+      }) || []
+  );
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white px-4 py-8 lg:py-12 flex flex-col items-center">
