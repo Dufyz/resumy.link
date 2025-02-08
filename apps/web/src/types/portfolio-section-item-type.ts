@@ -3,6 +3,7 @@ export type PortfolioSectionItem = {
   portfolio_id: number;
   portfolio_section_id: number;
   is_active: boolean;
+  index: number;
   metadata:
     | PortfolioSectionItemEducation
     | PortfolioSectionItemExperience

@@ -79,13 +79,13 @@ export async function handlePatchPortfolioSectionItem(
   const { id } = req.params as unknown as z.infer<
     typeof patchPortfolioSectionItemSchema
   >["params"];
-  const { is_active, metadata } = req.body as unknown as z.infer<
+  const { is_active, index, metadata } = req.body as unknown as z.infer<
     typeof patchPortfolioSectionItemSchema
   >["body"];
 
   const portfolioSectionItemOrError = await updatePortfolioSectionItem(
     portfolioSectionItemRepository
-  )(id, { is_active, metadata });
+  )(id, { is_active, index, metadata });
 
   if (portfolioSectionItemOrError.isFailure()) {
     res

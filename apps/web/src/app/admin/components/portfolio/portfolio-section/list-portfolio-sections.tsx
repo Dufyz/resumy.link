@@ -23,7 +23,7 @@ import { PortfolioSection } from "./portfolio-section";
 import { Portfolio } from "@/types/portfolio-type";
 import { useState } from "react";
 import { PortfolioSection as PortfolioSectionType } from "@/types/portfolio-section-type";
-import { sortPortfolioSections } from "@/lib/utils/useSortPortfolioSections";
+import { sortPortfolioSections } from "@/lib/utils/sortPortfolioSections";
 import usePortfolio from "@/hooks/usePortfolio";
 import { patchPortfolioSection } from "@/queries/portfolio-section-queries";
 
@@ -40,7 +40,7 @@ export default function ListPortfolioSections({
 
   const { updatePortfolioSection } = usePortfolio();
 
-  const [activeId, setActiveId] = useState(null);
+  const [activeId, setActiveId] = useState<null | number>(null);
 
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -53,10 +53,6 @@ export default function ListPortfolioSections({
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-
-  const onDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active?.id);
-  };
 
   const checkForEqualWeights = (sections: PortfolioSectionType[]) => {
     const weights = new Set();
@@ -84,6 +80,11 @@ export default function ListPortfolioSections({
     });
 
     await Promise.all(updatePromises);
+  };
+
+  const onDragStart = (event: DragStartEvent) => {
+    if (!event.active.id) return;
+    setActiveId(event.active.id as number);
   };
 
   function onDragEnd(event: DragEndEvent) {
@@ -126,11 +127,11 @@ export default function ListPortfolioSections({
         newWeight = prevWeight + (nextWeight - prevWeight) / 2;
       }
 
-      updatePortfolioSection(active.id as string, {
+      updatePortfolioSection(active.id as number, {
         index: newWeight,
       });
 
-      patchPortfolioSection(active.id, {
+      patchPortfolioSection(active.id as number, {
         index: newWeight,
       });
     }

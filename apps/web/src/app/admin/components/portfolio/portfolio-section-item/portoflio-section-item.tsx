@@ -14,6 +14,17 @@ import {
 } from "@/queries/portfolio-section-item-queries";
 import PortfolioSectionItemProject from "./portoflio-section-item-project";
 import PortfolioSectionItemLanguage from "./portoflio-section-item-language";
+import { IconGripVertical } from "@tabler/icons-react";
+import { sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
+  KeyboardSensor,
+  MouseSensor,
+  TouchSensor,
+  useDraggable,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 
 export function PortfolioSectionItem({
   portfolioSectionItem,
@@ -22,6 +33,32 @@ export function PortfolioSectionItem({
 }) {
   const { deletePortfolioSectionItem, updatePortfolioSectionItem } =
     usePortfolio();
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: portfolioSectionItem.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
+    useSensor(TouchSensor, {}),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const onToggleIsActive = async () => {
     const isActive = !portfolioSectionItem.is_active;
@@ -55,21 +92,21 @@ export function PortfolioSectionItem({
 
   return (
     <div
+      style={style}
+      ref={setNodeRef}
+      {...attributes}
       className={cn(
-        "group flex items-center justify-between rounded-lg border p-4", // Estilos básicos
-        // isDragging && "opacity-50", // Efeito enquanto o item está sendo arrastado
-        !portfolioSectionItem.is_active && "opacity-50", // Estilo quando inativo
-        "bg-card" // Estilo de fundo genérico que pode ser comum a todos os tipos
+        "group flex items-center justify-between rounded-lg border p-4",
+        "bg-card",
+        {
+          "opacity-50": !portfolioSectionItem.is_active || isDragging,
+        }
       )}
     >
       <div className="flex items-center gap-3">
-        {/* <button
-          {...attributes}
-          {...listeners}
-          className="cursor-grab touch-none"
-        >
-          <GripVertical className="h-5 w-5 text-muted-foreground" />
-        </button> */}
+        <button {...listeners} className="cursor-grab touch-none">
+          <IconGripVertical className="h-5 w-5 text-muted-foreground" />
+        </button>
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <span className="font-medium">

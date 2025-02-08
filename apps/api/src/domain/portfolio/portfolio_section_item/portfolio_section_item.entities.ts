@@ -10,6 +10,7 @@ export type PortfolioSectionItem = {
     | PortfolioSectionItemCertification
     | PortfolioSectionItemProject
     | PortfolioSectionItemLanguage;
+  index: number;
   created_at: Date;
   updated_at: Date;
 };

@@ -64,6 +64,7 @@ export const portfolioSectionItemSchema = z.object({
   portfolio_id: z.coerce.number(),
   portfolio_section_id: z.coerce.number(),
   is_active: z.boolean(),
+  index: z.coerce.number(),
   metadata: z.union([
     portfolioSectionItemEducationSchema,
     portfolioSectionItemExperienceSchema,
@@ -88,6 +89,7 @@ export const createPortfolioSectionItemSchema = portfolioSectionItemSchema.pick(
 export const updatePortfolioSectionItemSchema = portfolioSectionItemSchema
   .pick({
     is_active: true,
+    index: true,
     metadata: true,
   })
   .partial();

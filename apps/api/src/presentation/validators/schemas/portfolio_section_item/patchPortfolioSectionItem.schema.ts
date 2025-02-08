@@ -8,6 +8,7 @@ export const patchPortfolioSectionItemSchema = z.object({
   body: portfolioSectionItemSchema
     .pick({
       is_active: true,
+      index: true,
       metadata: true,
     })
     .partial(),

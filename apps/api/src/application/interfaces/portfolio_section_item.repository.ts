@@ -14,7 +14,9 @@ export type PortfolioSectionItemRepository = {
   ): Promise<Either<RepositoryErrors, PortfolioSectionItem>>;
   update(
     id: number,
-    body: Partial<Pick<PortfolioSectionItem, "is_active" | "metadata">>
+    body: Partial<
+      Pick<PortfolioSectionItem, "is_active" | "index" | "metadata">
+    >
   ): Promise<Either<RepositoryErrors, PortfolioSectionItem>>;
   delete(id: number): Promise<Either<RepositoryErrors, void>>;
 };

@@ -14,17 +14,49 @@ import {
 } from "@/queries/portfolio-section-queries";
 import usePortfolio from "@/hooks/usePortfolio";
 import { PORTFOLIO_SECTION_TYPES } from "@/app/admin/data/portfolio-section-types-data";
-import { useDraggable } from "@dnd-kit/core";
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  KeyboardSensor,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { IconGripVertical } from "@tabler/icons-react";
-import { useSortable } from "@dnd-kit/sortable";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useState } from "react";
+import { PortfolioSectionItem as PortfolioSectionItemType } from "@/types/portfolio-section-item-type";
+import { patchPortfolioSectionItem } from "@/queries/portfolio-section-item-queries";
+import { sortPortfolioSectionItems } from "@/lib/utils/sortPortfolioSectionItems";
+
+const WEIGHT_INCREMENT = 1000;
 
 export function PortfolioSection({
   portfolioSection,
 }: {
   portfolioSection: PortfolioSectionType;
 }) {
-  const { updatePortfolioSection, deletePortfolioSection } = usePortfolio();
+  const portfolioSectionItems = sortPortfolioSectionItems(
+    portfolioSection.portfolio_section_items || []
+  );
+  const [activeId, setActiveId] = useState<null | number>(null);
+
+  const {
+    updatePortfolioSection,
+    deletePortfolioSection,
+    updatePortfolioSectionItem,
+  } = usePortfolio();
 
   const {
     attributes,
@@ -39,6 +71,108 @@ export function PortfolioSection({
     transform: CSS.Transform.toString(transform),
     transition,
   };
+
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
+    useSensor(TouchSensor, {}),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const checkForEqualWeights = (items: PortfolioSectionItemType[]) => {
+    const weights = new Set();
+    const duplicates = new Set();
+
+    items.forEach((section) => {
+      if (weights.has(section.index)) {
+        duplicates.add(section.index);
+      }
+      weights.add(section.index);
+    });
+
+    return duplicates.size > 0;
+  };
+
+  const reorderAllWeights = async (items: PortfolioSectionItemType[]) => {
+    const updatePromises = items.map((section, index) => {
+      const newWeight = (index + 1) * WEIGHT_INCREMENT;
+
+      patchPortfolioSectionItem(section.id, {
+        index: newWeight,
+      });
+
+      return updatePortfolioSection(section.id, { index: newWeight });
+    });
+
+    await Promise.all(updatePromises);
+  };
+
+  const onDragStart = (event: DragStartEvent) => {
+    if (!event.active.id) return;
+
+    setActiveId(event.active.id as number);
+  };
+
+  function onDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+
+    if (!active || !over) return;
+    if (!active.id || !over.id) return;
+
+    const oldIndex = portfolioSectionItems.findIndex((s) => s.id === active.id);
+    const newIndex = portfolioSectionItems.findIndex((s) => s.id === over.id);
+
+    if (oldIndex === newIndex) {
+      setActiveId(null);
+      return;
+    }
+
+    const updatedSections = arrayMove(
+      portfolioSectionItems,
+      oldIndex,
+      newIndex
+    );
+
+    const hasEqualWeights = checkForEqualWeights(updatedSections);
+
+    if (hasEqualWeights) {
+      reorderAllWeights(updatedSections);
+    } else {
+      let newWeight: number;
+
+      if (newIndex === 0) {
+        newWeight = updatedSections[1].index / 2;
+      } else if (newIndex === updatedSections.length - 1) {
+        newWeight = updatedSections[newIndex - 1].index + WEIGHT_INCREMENT;
+      } else {
+        const prevWeight = updatedSections[newIndex - 1].index;
+        const nextWeight = updatedSections[newIndex + 1].index;
+
+        if (prevWeight === nextWeight) {
+          reorderAllWeights(updatedSections);
+          setActiveId(null);
+          return;
+        }
+
+        newWeight = prevWeight + (nextWeight - prevWeight) / 2;
+      }
+
+      updatePortfolioSectionItem(active.id as number, {
+        index: newWeight,
+      });
+
+      patchPortfolioSectionItem(active.id as number, {
+        index: newWeight,
+      });
+    }
+
+    setActiveId(null);
+  }
 
   const onToggleIsActive = async () => {
     const isActive = !portfolioSection.is_active;
@@ -115,26 +249,47 @@ export function PortfolioSection({
           </div>
         </div>
 
-        <AnimatePresence>
-          <div className="flex flex-col gap-3">
-            {portfolioSection.portfolio_section_items?.map(
-              (portfolioSection) => (
-                <motion.div
-                  key={portfolioSection.id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <PortfolioSectionItem
-                    portfolioSectionItem={portfolioSection}
-                  />
-                </motion.div>
-              )
-            )}
-          </div>
-        </AnimatePresence>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={onDragStart}
+          onDragEnd={onDragEnd}
+        >
+          <SortableContext
+            items={portfolioSectionItems}
+            strategy={verticalListSortingStrategy}
+          >
+            <AnimatePresence>
+              <div className="flex flex-col gap-3">
+                {portfolioSectionItems.map((portfolioSectionItem) => (
+                  <motion.div
+                    key={portfolioSectionItem.id}
+                    layout
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <PortfolioSectionItem
+                      portfolioSectionItem={portfolioSectionItem}
+                    />
+                  </motion.div>
+                ))}
+              </div>
+            </AnimatePresence>
+          </SortableContext>
+          <DragOverlay>
+            {activeId ? (
+              <PortfolioSectionItem
+                portfolioSectionItem={
+                  portfolioSectionItems.find(
+                    (s) => s.id === activeId
+                  ) as unknown as PortfolioSectionItemType
+                }
+              />
+            ) : null}
+          </DragOverlay>
+        </DndContext>
 
         <CreatePortfolioSectionItemModal portfolioSection={portfolioSection} />
       </div>
