@@ -5,6 +5,7 @@ export type Portfolio = {
   title: string;
   bio: string | null;
   avatar_path: string | null;
+  is_active: boolean;
   metadata: {
     links: {
       type: PortfolioLinkType;

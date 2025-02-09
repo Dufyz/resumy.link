@@ -13,6 +13,9 @@ export type PortfolioRepository = {
   checkUsernameAvailability(
     username: string
   ): Promise<Either<RepositoryErrors, boolean>>;
+  countActivePortfoliosByUserId(
+    user_id: number
+  ): Promise<Either<RepositoryErrors, number>>;
   create(
     body: Pick<
       Portfolio,
@@ -22,7 +25,10 @@ export type PortfolioRepository = {
   update(
     id: number,
     body: Partial<
-      Pick<Portfolio, "username" | "title" | "bio" | "avatar_path" | "metadata">
+      Pick<
+        Portfolio,
+        "username" | "title" | "bio" | "avatar_path" | "is_active" | "metadata"
+      >
     >
   ): Promise<Either<RepositoryErrors, Portfolio>>;
 };

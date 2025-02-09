@@ -4,8 +4,10 @@ import portfolioRoutes from "./portfolio.routes";
 import portfolioSectionRoutes from "./portfolio_section.routes";
 import portfolioSectionItemsRoutes from "./portfolio_section_item.routes";
 import onboardingRoutes from "./onboarding.routes";
+import stripeRoutes from "./stripe.routes";
 
 const routes = Router();
+
 const apiRoutes = Router();
 
 apiRoutes.get("/health-check", (_, res) => {
@@ -17,6 +19,7 @@ apiRoutes.use(userRoutes);
 apiRoutes.use(portfolioRoutes);
 apiRoutes.use(portfolioSectionRoutes);
 apiRoutes.use(portfolioSectionItemsRoutes);
+apiRoutes.use(stripeRoutes);
 
 routes.use("/api", apiRoutes);
 

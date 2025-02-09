@@ -10,6 +10,8 @@ export type UserRepository = {
   ): Promise<Either<RepositoryErrors, User>>;
   update(
     id: number,
-    body: Partial<Pick<User, "name" | "email">>
+    body: Partial<
+      Pick<User, "name" | "email" | "plan_type" | "portfolio_limit">
+    >
   ): Promise<Either<RepositoryErrors, User>>;
 };

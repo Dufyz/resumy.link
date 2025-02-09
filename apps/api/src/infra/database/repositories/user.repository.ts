@@ -13,6 +13,8 @@ export const userRepository: UserRepository = {
           u.id,
           u.name,
           u.email,
+          u.portfolio_limit,
+          u.plan_type,
           u.created_at,
           u.updated_at
         FROM users u
@@ -33,6 +35,8 @@ export const userRepository: UserRepository = {
           u.id,
           u.name,
           u.email,
+          u.portfolio_limit,
+          u.plan_type,
           u.created_at,
           u.updated_at
         FROM users u
@@ -59,7 +63,7 @@ export const userRepository: UserRepository = {
 
       const [user] = await sql`
         INSERT INTO users ${sql(userToCreate, colsToInsert)}
-        RETURNING id, name, email, created_at, updated_at
+        RETURNING id, name, email, portfolio_limit, plan_type, created_at, updated_at
       `;
 
       return success(parseUserFromDB(user as User));
@@ -69,12 +73,18 @@ export const userRepository: UserRepository = {
   },
   update: async (id, body) => {
     try {
-      const userToUpdate: Partial<Pick<User, "name" | "email" | "updated_at">> =
-        filterObjNullishValues({
-          name: body.name,
-          email: body.email,
-          updated_at: new Date(),
-        });
+      const userToUpdate: Partial<
+        Pick<
+          User,
+          "name" | "email" | "portfolio_limit" | "plan_type" | "updated_at"
+        >
+      > = filterObjNullishValues({
+        name: body.name,
+        email: body.email,
+        plan_type: body.plan_type,
+        portfolio_limit: body.portfolio_limit,
+        updated_at: new Date(),
+      });
 
       const colsToUpdate = Object.keys(
         userToUpdate
@@ -84,7 +94,7 @@ export const userRepository: UserRepository = {
         UPDATE users
         SET ${sql(userToUpdate, colsToUpdate)}
         WHERE id = ${id}
-        RETURNING id, name, email, created_at, updated_at
+        RETURNING id, name, email, portfolio_limit, plan_type, created_at, updated_at
       `;
 
       return success(parseUserFromDB(user as User));

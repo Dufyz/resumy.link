@@ -1,0 +1,18 @@
+meta {
+  name: POST Create Checkout Session
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{api_url}}/stripe/create-checkout-session
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "guilhermeiagothomaz@hotmail.com",
+    "price": "standard"
+  }
+}

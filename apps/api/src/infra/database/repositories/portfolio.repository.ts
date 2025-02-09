@@ -16,6 +16,7 @@ export const portfolioRepository: PortfolioRepository = {
           p.title,
           p.bio,
           p.avatar_path,
+          P.is_active,
           p.metadata,
           p.created_at,
           p.updated_at
@@ -40,6 +41,7 @@ export const portfolioRepository: PortfolioRepository = {
           p.title,
           p.bio,
           p.avatar_path,
+          p.is_active,
           p.metadata,
           p.created_at,
           p.updated_at
@@ -64,6 +66,7 @@ export const portfolioRepository: PortfolioRepository = {
           p.title,
           p.bio,
           p.avatar_path,
+          p.is_active,
           p.metadata,
           p.created_at,
           p.updated_at
@@ -92,6 +95,20 @@ export const portfolioRepository: PortfolioRepository = {
       return failure(getRepositoryError(e));
     }
   },
+  countActivePortfoliosByUserId: async (userId) => {
+    try {
+      const [result] = await sql`
+        SELECT 
+          COUNT(*) as count
+        FROM portfolios p
+        WHERE p.user_id = ${userId} AND p.is_active = true
+      `;
+
+      return success(result.count);
+    } catch (e: any) {
+      return failure(getRepositoryError(e));
+    }
+  },
   create: async (body) => {
     try {
       const portfolioToCreate: Pick<
@@ -111,7 +128,7 @@ export const portfolioRepository: PortfolioRepository = {
 
       const [portfolio] = await sql`
         INSERT INTO portfolios ${sql(portfolioToCreate, colsToInsert)}
-        RETURNING id, user_id, username, title, bio, avatar_path, metadata, created_at, updated_at
+        RETURNING id, user_id, username, title, bio, avatar_path, metadata, is_active, created_at, updated_at
       `;
 
       return success(parsePortfolioFromDB(portfolio as Portfolio));
@@ -128,6 +145,7 @@ export const portfolioRepository: PortfolioRepository = {
           | "title"
           | "bio"
           | "avatar_path"
+          | "is_active"
           | "metadata"
           | "updated_at"
         >
@@ -136,6 +154,7 @@ export const portfolioRepository: PortfolioRepository = {
         title: body.title,
         bio: body.bio,
         avatar_path: body.avatar_path,
+        is_active: body.is_active,
         metadata: body.metadata,
         updated_at: new Date(),
       });
@@ -148,7 +167,7 @@ export const portfolioRepository: PortfolioRepository = {
         UPDATE portfolios
         SET ${sql(portfolioToUpdate, colsToUpdate)}
         WHERE id = ${id}
-        RETURNING id, user_id, username, title, bio, avatar_path, metadata, created_at, updated_at
+        RETURNING id, user_id, username, title, bio, avatar_path, is_active, metadata, created_at, updated_at
       `;
 
       return success(parsePortfolioFromDB(portfolio as Portfolio));

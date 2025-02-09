@@ -7,6 +7,7 @@ export const parsePortfolioFromDB = (portfolio: Portfolio): Portfolio => ({
   title: portfolio.title,
   bio: portfolio.bio,
   avatar_path: portfolio.avatar_path,
+  is_active: portfolio.is_active,
   metadata: portfolio.metadata,
   created_at: portfolio.created_at,
   updated_at: portfolio.updated_at,

@@ -21,6 +21,7 @@ export const portfolioSchema = z.object({
     .trim()
     .nullish(),
   avatar_path: z.string().nullish(),
+  is_active: z.boolean(),
   metadata: z
     .object({
       links: z.array(

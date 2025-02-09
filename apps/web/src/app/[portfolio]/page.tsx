@@ -22,6 +22,8 @@ export default async function PortfolioPage({
 
   const { portfolio } = portfolioOrError.value;
 
+  if (!portfolio.is_active) return <NotFoundPage />;
+
   const [portfolioSectionsOrError, portfolioSectionItemsOrError] =
     await Promise.all([
       getPortfolioSectionsByPortfolioId(portfolio.id),

@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Palette, BarChart, Settings, Crown, Link2, Code2 } from "lucide-react";
 import { UserProfileMenu } from "./user-profile-menu";
 import { cn } from "@/lib/utils";
+import PaymentModal from "./payment-modal";
 
 const SIDEBAR_ITEMS = [
   {
@@ -66,10 +67,7 @@ export function Sidebar() {
       </ScrollArea>
 
       <div className="border-t p-4 flex flex-col gap-4">
-        <Button variant="outline" className="w-full justify-start flex gap-2">
-          <Crown className="h-5 w-5 text-yellow-500" />
-          Faça upgrade agora
-        </Button>
+        <PaymentModal />
         <UserProfileMenu />
       </div>
     </div>

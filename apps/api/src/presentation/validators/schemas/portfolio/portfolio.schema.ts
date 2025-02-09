@@ -17,6 +17,7 @@ export const portfolioSchema = z.object({
     .max(50, "O título deve ter menos de 50 caracteres"),
   bio: z.string().trim().nullable(),
   avatar_path: z.string().nullable(),
+  is_active: z.boolean(),
   metadata: z
     .object({
       links: z.array(

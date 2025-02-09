@@ -5,6 +5,7 @@ import { CreatePortfolioSectionModal } from "./components/portfolio/portfolio-se
 import ListPortfolioSections from "./components/portfolio/portfolio-section/list-portfolio-sections";
 import usePortfolio from "../../hooks/usePortfolio";
 import { MobilePreview } from "./components/mobile-preview";
+import AlertPortfolioPayment from "./components/alert-portfolio-payment";
 
 export default function AdminPage() {
   const { portfolio } = usePortfolio();
@@ -16,15 +17,16 @@ export default function AdminPage() {
       <div className="flex-1 p-6 border-r">
         <div className="w-full max-w-3xl mx-auto">
           <div className="flex w-full flex-col gap-4">
+            <AlertPortfolioPayment />
             <PortfolioProfile portfolio={portfolio} />
             <CreatePortfolioSectionModal portfolio={portfolio} />
             <ListPortfolioSections portfolio={portfolio} />
           </div>
         </div>
       </div>
-      {/* <div className="flex-2 py-6 px-8">
+      <div className="flex-2 py-6 px-8">
         <MobilePreview />
-      </div> */}
+      </div>
     </div>
   );
 }

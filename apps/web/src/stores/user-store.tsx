@@ -6,7 +6,9 @@ type UserStore = {
 
   setUser(user: User): void;
 
-  updateUser(user: Partial<Pick<User, "name" | "email">>): void;
+  updateUser(
+    user: Partial<Pick<User, "name" | "plan_type" | "portfolio_limit">>
+  ): void;
 };
 
 export const useUserStore = create<UserStore>((set, get) => ({

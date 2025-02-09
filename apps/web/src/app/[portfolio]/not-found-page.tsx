@@ -30,11 +30,11 @@ export default function NotFoundPage() {
 
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold text-white">
-            Oops! Parece que esta página não existe.
+            Oops! Parece que esta página não está disponível.
           </h2>
           <p className="text-gray-400 max-w-md mx-auto">
-            Gostaria de usar este nome de usuário para criar uma nova página?
-            Crie seu portfólio e mostre ao mundo o que você pode fazer!
+            Gostaria de ter o seu portfolio aqui? Crie agora mesmo e mostre ao
+            mundo o que você pode fazer!
           </p>
         </div>
 

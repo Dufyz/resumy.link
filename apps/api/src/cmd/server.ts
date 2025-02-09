@@ -1,8 +1,9 @@
 import helmet from "helmet";
 import express from "express";
 import cors from "cors";
-import routes from "../presentation/routes";
 import { NODE_ENV, SERVER_PORT } from "../infra/config";
+import routes from "../presentation/routes";
+import webhookRoutes from "../presentation/webhooks";
 
 require("dotenv").config();
 
@@ -23,6 +24,9 @@ app.use(
 );
 
 app.use(helmet());
+
+app.use(webhookRoutes);
+
 app.use(express.json());
 app.use(routes);
 

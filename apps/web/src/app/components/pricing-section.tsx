@@ -1,49 +1,8 @@
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PLANS } from "@/data/plans-data";
 
-const planos = [
-  {
-    nome: "Hobby",
-    preco: "Grátis",
-    recursos: [
-      "1 página de portfólio",
-      "Análises básicas",
-      "Suporte da comunidade",
-    ],
-    cta: "Começar",
-    popular: false,
-  },
-  {
-    nome: "Pro",
-    preco: "R$11,99",
-    periodo: "por mês",
-    recursos: [
-      "5 páginas de portfólio",
-      "Análises avançadas",
-      "Domínios personalizados",
-      "Suporte prioritário",
-      "Remover marca d'água",
-    ],
-    cta: "Iniciar teste gratuito",
-    popular: true,
-  },
-  {
-    nome: "Lifetime",
-    preco: "R$99,99",
-    recursos: [
-      "Páginas de portfólio ilimitadas",
-      "Análises avançadas",
-      "Domínios personalizados",
-      "Suporte prioritário",
-      "Remover marca d'água",
-      "CSS personalizado",
-    ],
-    cta: "Comprar agora",
-    popular: false,
-  },
-];
-
-export default function SecaoDePrecos() {
+export default function PricingSection() {
   return (
     <section className="py-20 px-4 bg-gray-50" id="pricing">
       <div className="max-w-7xl mx-auto flex flex-col gap-16">
@@ -56,7 +15,7 @@ export default function SecaoDePrecos() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {planos.map((plano) => (
+          {PLANS.map((plano) => (
             <div
               key={plano.nome}
               className={`bg-white flex flex-col p-8 rounded-2xl shadow-lg border-2 ${
@@ -70,9 +29,12 @@ export default function SecaoDePrecos() {
                 <div>
                   <span className="text-4xl font-bold">{plano.preco}</span>
                   {plano.periodo && (
-                    <span className="text-gray-600">/{plano.periodo}</span>
+                    <span className="text-muted-foreground text-sm">
+                      {plano.periodo}
+                    </span>
                   )}
                 </div>
+
                 <ul className="flex flex-col gap-3">
                   {plano.recursos.map((recurso, index) => (
                     <li key={index} className="flex items-center gap-2">
