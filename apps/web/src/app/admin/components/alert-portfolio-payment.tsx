@@ -23,7 +23,9 @@ export default function AlertPortfolioPayment() {
             </AlertDescription>
           </div>
         </div>
-        <PaymentModal />
+        <div>
+          <PaymentModal />
+        </div>
       </div>
     </Alert>
   );

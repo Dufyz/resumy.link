@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Portfolio } from "@/types/portfolio-type";
 import { UpdatePortfolioModal } from "./update-portfolio-modal";
 import PortfolioLinkIcon from "./portfolio-link/portfolio-link-icon";
+import getS3Image from "@/lib/utils/getS3Image";
 
 export function PortfolioProfile({ portfolio }: { portfolio: Portfolio }) {
   return (
@@ -12,7 +13,11 @@ export function PortfolioProfile({ portfolio }: { portfolio: Portfolio }) {
         <div className="flex items-center gap-4">
           <div className="relative h-20 w-20">
             <Image
-              src={portfolio.avatar_path || "/placeholder.svg"}
+              src={
+                portfolio.avatar_path
+                  ? getS3Image(portfolio.avatar_path)
+                  : "/placeholder.svg"
+              }
               alt={portfolio.username}
               width={80}
               height={80}

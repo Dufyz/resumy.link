@@ -90,13 +90,14 @@ export async function handlePatchUser(req: Request, res: Response) {
   const { id } = req.params as unknown as z.infer<
     typeof patchUserschema
   >["params"];
-  const { name, email } = req.body as unknown as z.infer<
+  const { name, email, avatar_path } = req.body as unknown as z.infer<
     typeof patchUserschema
   >["body"];
 
   const userOrError = await updateUser(userRepository)(id, {
     name,
     email,
+    avatar_path,
   });
 
   if (userOrError.isFailure()) {

@@ -11,7 +11,10 @@ export type UserRepository = {
   update(
     id: number,
     body: Partial<
-      Pick<User, "name" | "email" | "plan_type" | "portfolio_limit">
+      Pick<
+        User,
+        "name" | "email" | "avatar_path" | "plan_type" | "portfolio_limit"
+      >
     >
   ): Promise<Either<RepositoryErrors, User>>;
 };

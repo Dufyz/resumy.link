@@ -5,6 +5,7 @@ import portfolioSectionRoutes from "./portfolio_section.routes";
 import portfolioSectionItemsRoutes from "./portfolio_section_item.routes";
 import onboardingRoutes from "./onboarding.routes";
 import stripeRoutes from "./stripe.routes";
+import bucketRoutes from "./bucket.routes";
 
 const routes = Router();
 
@@ -20,6 +21,7 @@ apiRoutes.use(portfolioRoutes);
 apiRoutes.use(portfolioSectionRoutes);
 apiRoutes.use(portfolioSectionItemsRoutes);
 apiRoutes.use(stripeRoutes);
+apiRoutes.use(bucketRoutes);
 
 routes.use("/api", apiRoutes);
 

@@ -24,6 +24,9 @@ import {
 import { patchPortfolio } from "@/queries/portfolio-queries";
 import usePortfolio from "@/hooks/usePortfolio";
 import PortfolioLinkForm from "./portfolio-link/portfolio-link-form";
+import PortfolioAvatarUpload from "@/app/admin/components/portfolio/portfolio-avatar-upload";
+import getS3Image from "@/lib/utils/getS3Image";
+import { postFile } from "@/queries/bucket-queries";
 
 export function UpdatePortfolioModal({ portfolio }: { portfolio: Portfolio }) {
   const { updatePortfolio } = usePortfolio();
@@ -34,6 +37,7 @@ export function UpdatePortfolioModal({ portfolio }: { portfolio: Portfolio }) {
   const [links, setLinks] = useState<
     Array<{ type: PortfolioLinkType; url: string }>
   >(portfolio.metadata?.links || []);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const form = useForm<UpdatePortfolioSchema>({
     resolver: zodResolver(updatePortfolioSchema),
@@ -79,9 +83,36 @@ export function UpdatePortfolioModal({ portfolio }: { portfolio: Portfolio }) {
     form.setValue("metadata.links", newLinks);
   };
 
+  const handleAvatarChange = (avatarData: {
+    previewUrl: string | null;
+    file: File | null;
+    type: string;
+  }) => {
+    if (avatarData.type === "new") {
+      setAvatarFile(avatarData.file);
+      form.setValue("avatar_path", avatarData.previewUrl);
+    } else if (avatarData.type === "remove") {
+      setAvatarFile(null);
+      form.setValue("avatar_path", null);
+    }
+  };
+
   async function onSubmit(data: UpdatePortfolioSchema) {
     try {
       setIsSubmitting(true);
+
+      if (avatarFile) {
+        const filePathOrError = await postFile({
+          file: avatarFile,
+          file_path: `portfolios/avatar`,
+        });
+
+        if (filePathOrError.isFailure()) return;
+
+        const { file_path } = filePathOrError.value;
+
+        data.avatar_path = file_path;
+      }
 
       const responseOrError = await patchPortfolio(portfolio.id, data);
 
@@ -136,6 +167,16 @@ export function UpdatePortfolioModal({ portfolio }: { portfolio: Portfolio }) {
 
             <TabsContent value="main" className="px-4 mt-0 pb-4">
               <div className="flex flex-col gap-4">
+                <PortfolioAvatarUpload
+                  avatarPath={
+                    portfolio.avatar_path
+                      ? getS3Image(portfolio.avatar_path)
+                      : null
+                  }
+                  onAvatarChange={handleAvatarChange}
+                  isSubmitting={isSubmitting}
+                  error={errors.avatar_path}
+                />
                 <div>
                   <label className="text-sm font-medium" htmlFor="profileTitle">
                     Nome de exibição

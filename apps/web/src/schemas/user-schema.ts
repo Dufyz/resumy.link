@@ -1,4 +1,4 @@
-import { z } from "zod";
+import z from "zod";
 
 export const userSchema = z.object({
   id: z.coerce.number(),
@@ -10,6 +10,9 @@ export const userSchema = z.object({
     .string()
     .email("Digite um email válido")
     .min(1, "Email é obrigatório"),
+  avatar_path: z.string().nullable(),
+  portfolio_limit: z.number(),
+  plan_type: z.enum(["free", "standard", "lifetime"]),
   created_at: z.coerce.date(),
   updated_at: z.coerce.date(),
 });
@@ -23,6 +26,7 @@ export const updateUserSchema = userSchema
   .pick({
     name: true,
     email: true,
+    avatar_path: true,
   })
   .partial();
 

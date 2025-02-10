@@ -159,6 +159,8 @@ export const portfolioRepository: PortfolioRepository = {
         updated_at: new Date(),
       });
 
+      if (body.avatar_path === null) portfolioToUpdate.avatar_path = null;
+
       const colsToUpdate = Object.keys(
         portfolioToUpdate
       ) as (keyof typeof portfolioToUpdate)[];

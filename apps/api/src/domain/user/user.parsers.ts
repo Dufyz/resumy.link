@@ -4,6 +4,7 @@ export const parseUserFromDB = (user: User): User => ({
   id: user.id,
   name: user.name,
   email: user.email,
+  avatar_path: user.avatar_path,
   plan_type: user.plan_type,
   portfolio_limit: user.portfolio_limit,
   created_at: user.created_at,

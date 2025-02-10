@@ -1,183 +1,139 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Select, SelectContent, SelectItem } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import useUser from "@/hooks/useUser";
-import { useRouter, useSearchParams } from "next/navigation";
+import UserAvatarUpload from "@/components/user-avatar-upload";
+import getS3Image from "@/lib/utils/getS3Image";
+import { useForm } from "react-hook-form";
+import { updateUserSchema, UpdateUserSchema } from "@/schemas/user-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { postFile } from "@/queries/bucket-queries";
+import { patchUser } from "@/queries/user-queries";
+import { IconLoader2 } from "@tabler/icons-react";
 
 export default function AccountPage() {
-  const { user, setUser, updateUser, purchasePlan } = useUser();
-  const [name, setName] = useState(user?.name);
-  const [avatar, setAvatar] = useState(user?.avatar);
-  const [planType, setPlanType] = useState(user?.plan_type);
-  const [portfolioCount, setPortfolioCount] = useState(
-    user?.portfolio_count || 1
-  );
-  const router = useRouter();
+  const { user, updateUser } = useUser();
 
-  const searchParams = useSearchParams();
-  const tab = searchParams.get("tab");
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [activeTab, setActiveTab] = useState(tab || "profile");
+  const form = useForm<UpdateUserSchema>({
+    resolver: zodResolver(updateUserSchema),
+    defaultValues: {
+      email: user?.email,
+      name: user?.name,
+      avatar_path: user?.avatar_path,
+    },
+    mode: "onChange",
+  });
 
-  useEffect(() => {
-    if (tab) {
-      setActiveTab(tab);
-    }
-  }, [tab]);
-
-  const handleSave = () => {
-    updateUser({ name, avatar });
-  };
-
-  const handlePurchase = () => {
-    purchasePlan(planType, portfolioCount);
-  };
-
-  const handleAvatarUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => setAvatar(e.target.result);
-      reader.readAsDataURL(file);
+  const handleAvatarChange = (avatarData: {
+    previewUrl: string | null;
+    file: File | null;
+    type: string;
+  }) => {
+    if (avatarData.type === "new") {
+      setAvatarFile(avatarData.file);
+      form.setValue("avatar_path", avatarData.previewUrl);
+    } else if (avatarData.type === "remove") {
+      setAvatarFile(null);
+      form.setValue("avatar_path", null);
     }
   };
 
-  const handleRemoveAvatar = () => {
-    setAvatar(null);
-  };
+  async function onSubmit(data: UpdateUserSchema) {
+    if (!user) return;
 
-  const handleTabChange = (value) => {
-    setActiveTab(value);
-    router.push(`/admin/account?tab=${value}`, undefined, { shallow: true });
-  };
+    try {
+      setIsSubmitting(true);
+
+      if (avatarFile) {
+        const filePathOrError = await postFile({
+          file: avatarFile,
+          file_path: `users/avatar`,
+        });
+
+        if (filePathOrError.isFailure()) return;
+
+        const { file_path } = filePathOrError.value;
+
+        data.avatar_path = file_path;
+      }
+
+      const responseOrError = await patchUser(user.id, data);
+
+      if (responseOrError.isFailure()) return;
+
+      const { user: response } = responseOrError.value;
+      updateUser(response);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   if (!user) return null;
 
   return (
     <div className="max-w-2xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Minha Conta</h1>
-      <Tabs value={activeTab} onValueChange={handleTabChange}>
-        <TabsList className="mb-6">
-          <TabsTrigger value="profile">Perfil</TabsTrigger>
-          <TabsTrigger value="plans">Planos e Portfolios</TabsTrigger>
-        </TabsList>
-
+      <Tabs defaultValue="profile">
         <TabsContent value="profile">
           <Card>
             <CardContent className="p-6 flex flex-col gap-6">
-              <div className="flex items-center gap-6">
-                <Avatar className="cursor-pointer relative group">
-                  <AvatarImage
-                    src={avatar}
-                    alt="Avatar"
-                    onClick={() =>
-                      document.getElementById("avatarUpload").click()
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="flex flex-col gap-6"
+              >
+                <div className="flex items-center gap-6">
+                  <UserAvatarUpload
+                    avatarPath={
+                      user.avatar_path ? getS3Image(user.avatar_path) : null
                     }
+                    isSubmitting={isSubmitting}
+                    onAvatarChange={handleAvatarChange}
+                    error={null}
                   />
-                  <AvatarFallback
-                    onClick={() =>
-                      document.getElementById("avatarUpload").click()
-                    }
-                  >
-                    U
-                  </AvatarFallback>
-                  {avatar && (
-                    <Button
-                      onClick={handleRemoveAvatar}
-                      variant="destructive"
-                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      X
-                    </Button>
-                  )}
-                </Avatar>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleAvatarUpload}
-                  className="hidden"
-                  id="avatarUpload"
-                />
-              </div>
-              <Input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Nome"
-                className="w-full"
-              />
-              <Input
-                type="email"
-                value={user.email}
-                disabled
-                placeholder="Email"
-                className="w-full"
-              />
-              <Button onClick={handleSave} className="self-end">
-                Salvar
-              </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="plans">
-          <Card>
-            <CardContent className="p-6 flex flex-col gap-6">
-              {user.plan_type === "lifetime" ? (
-                <p className="text-green-600 font-semibold">
-                  Você tem acesso a tudo! 🚀
-                </p>
-              ) : (
-                <div className="flex flex-col gap-4">
-                  <p className="text-yellow-600">
-                    Seu plano é <strong>Standard</strong>. Você possui{" "}
-                    {user.portfolio_count} portfólios.
-                  </p>
-                  <p className="text-gray-600">
-                    Benefícios de comprar mais portfólios:
-                    <ul className="list-disc list-inside">
-                      <li>Acesso a mais recursos</li>
-                      <li>Maior visibilidade</li>
-                      <li>Suporte prioritário</li>
-                    </ul>
-                  </p>
-                  <Select value={planType} onValueChange={setPlanType}>
-                    <SelectContent>
-                      <SelectItem value="lifetime">
-                        Mudar para Lifetime
-                      </SelectItem>
-                      <SelectItem value="standard">
-                        Continuar Standard
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select
-                    value={portfolioCount}
-                    onValueChange={(value) => setPortfolioCount(Number(value))}
-                  >
-                    <SelectContent>
-                      <SelectItem value={1}>
-                        Comprar 1 Portfolio - $10
-                      </SelectItem>
-                      <SelectItem value={2}>
-                        Comprar 2 Portfolios - $18
-                      </SelectItem>
-                      <SelectItem value={3}>
-                        Comprar 3 Portfolios - $25
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button onClick={handlePurchase} className="self-end">
-                    Confirmar Compra
-                  </Button>
                 </div>
-              )}
+                <Input
+                  type="text"
+                  placeholder="Nome"
+                  className="w-full"
+                  {...form.register("name")}
+                />
+                {form.formState.errors.name && (
+                  <span>{form.formState.errors.name.message}</span>
+                )}
+                <Input
+                  type="email"
+                  value={user.email}
+                  disabled
+                  placeholder="Email"
+                  className="w-full"
+                  {...form.register("email")}
+                />
+                <Button
+                  type="submit"
+                  className={`w-full ${
+                    isSubmitting ? "cursor-not-allowed opacity-70" : ""
+                  }`}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <div className="flex items-center gap-2">
+                      <IconLoader2 className="h-4 w-4 animate-spin" />
+                      <span>Salvando...</span>
+                    </div>
+                  ) : (
+                    <span>Salvar</span>
+                  )}
+                </Button>
+              </form>
             </CardContent>
           </Card>
         </TabsContent>

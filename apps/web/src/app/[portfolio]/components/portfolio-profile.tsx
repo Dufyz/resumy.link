@@ -1,4 +1,5 @@
 import PortfolioLinkIcon from "@/app/admin/components/portfolio/portfolio-link/portfolio-link-icon";
+import getS3Image from "@/lib/utils/getS3Image";
 import { Portfolio } from "@/types/portfolio-type";
 import Image from "next/image";
 
@@ -13,7 +14,7 @@ export default function PortfolioProfile({
     <div className="flex flex-col items-center text-center lg:items-start lg:text-left gap-4">
       <div className="relative w-32 h-32 lg:w-40 lg:h-40">
         <Image
-          src={avatar_path || "/placeholder.svg"}
+          src={avatar_path ? getS3Image(avatar_path) : "/placeholder.svg"}
           alt={title}
           fill
           className="rounded-full object-cover border-4 border-blue-500 shadow-lg transition-transform duration-300 hover:scale-105"

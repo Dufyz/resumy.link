@@ -15,6 +15,7 @@ import { User, LogOut } from "lucide-react";
 import { signOut } from "@/app/login/actions/sign-out-action";
 import { redirect } from "next/navigation";
 import useUser from "@/hooks/useUser";
+import getS3Image from "@/lib/utils/getS3Image";
 
 export function UserProfileMenu() {
   const { user } = useUser();
@@ -30,7 +31,11 @@ export function UserProfileMenu() {
         >
           <div className="flex items-center justify-start gap-2">
             <Image
-              src={"/placeholder.svg"}
+              src={
+                user.avatar_path
+                  ? getS3Image(user.avatar_path)
+                  : "/placeholder.svg"
+              }
               alt={user.name}
               width={32}
               height={32}
@@ -47,7 +52,11 @@ export function UserProfileMenu() {
       <DropdownMenuContent className="w-72" align="start">
         <div className="flex items-center gap-2 p-2">
           <Image
-            src={"/placeholder.svg"}
+            src={
+              user.avatar_path
+                ? getS3Image(user.avatar_path)
+                : "/placeholder.svg"
+            }
             alt={user.name}
             width={40}
             height={40}
