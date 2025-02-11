@@ -1,22 +1,22 @@
 import helmet from "helmet";
 import express from "express";
 import cors from "cors";
-import { NODE_ENV, SERVER_PORT } from "../infra/config";
+import rateLimit from "express-rate-limit";
+import { NODE_ENV, SERVER_PORT, WEB_URL } from "../infra/config";
 import routes from "../presentation/routes";
 import webhookRoutes from "../presentation/webhooks";
+import dotenv from "dotenv";
+import morgan from "morgan";
 
-require("dotenv").config();
+dotenv.config();
 
-// TODO: Rate limiter
-// TODO: Error handling middleware
-// TODO: Graceful shutdown
-// TODO: Logger
+// TODO: Configurar logger melhor (atualmente usando morgan)
 
 const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: WEB_URL,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -25,17 +25,43 @@ app.use(
 
 app.use(helmet());
 
-app.use(webhookRoutes);
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: "Muitas requisições. Tente novamente mais tarde.",
+  })
+);
 
+app.use(morgan("dev"));
+
+app.use(webhookRoutes);
 app.use(express.json());
 app.use(routes);
 
-const server = app.listen(SERVER_PORT, () => {
-  console.log(
-    `Server running in ${NODE_ENV} mode on port http://localhost:${SERVER_PORT}`
-  );
-});
+async function startServer() {
+  try {
+    const server = app.listen(SERVER_PORT, () => {
+      console.log(
+        `Server running in ${NODE_ENV} mode on http://localhost:${SERVER_PORT}`
+      );
+    });
 
-server.timeout = 30000;
+    server.timeout = 30000;
 
-export default server;
+    // // Graceful Shutdown
+    // process.on("SIGINT", async () => {
+    //   console.log("Encerrando o servidor...");
+    //   await db.destroy();
+    //   server.close(() => {
+    //     console.log("Servidor encerrado com sucesso.");
+    //     process.exit(0);
+    //   });
+    // });
+  } catch (error) {
+    console.error("Erro ao rodar migrations:", error);
+    process.exit(1);
+  }
+}
+
+startServer();
