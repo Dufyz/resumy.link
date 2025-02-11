@@ -51,9 +51,6 @@ const collections = [
 
 export function MobilePreview() {
   const activeCollections = collections.filter((c) => c.isActive);
-  const activeLinks = activeCollections.flatMap((c) =>
-    c.links.filter((l) => l.isActive)
-  );
 
   return (
     <div className="sticky top-4">

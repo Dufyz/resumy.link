@@ -108,11 +108,21 @@ export function CreatePortfolioSectionItemModal({
                 {...form.register("metadata.organization")}
                 placeholder="Nome da instituição"
               />
-              {form.formState.errors?.metadata?.organization && (
-                <p className="text-red-500 text-sm mt-1">
-                  {form.formState.errors?.metadata?.organization?.message}
-                </p>
-              )}
+              {form.formState.errors?.metadata &&
+                typeof form.formState.errors.metadata === "object" &&
+                form.formState.errors.metadata !== null &&
+                "organization" in form.formState.errors.metadata &&
+                typeof form.formState.errors.metadata.organization ===
+                  "object" &&
+                form.formState.errors.metadata.organization !== null &&
+                "message" in form.formState.errors.metadata.organization && (
+                  <span>
+                    {
+                      form.formState.errors.metadata.organization
+                        .message as string
+                    }
+                  </span>
+                )}
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">
@@ -248,9 +258,14 @@ export function CreatePortfolioSectionItemModal({
                 </Select>
               )}
             />
-            {form.formState.errors.metadata?.level && (
-              <p className="text-red-500 text-sm mt-1">O nível é obrigatório</p>
-            )}
+            {form.formState.errors?.metadata &&
+              typeof form.formState.errors.metadata === "object" &&
+              form.formState.errors.metadata !== null &&
+              "level" in form.formState.errors.metadata && (
+                <p className="text-red-500 text-sm mt-1">
+                  O nível é obrigatório
+                </p>
+              )}
           </div>
         );
 

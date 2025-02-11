@@ -6,10 +6,10 @@ import { createClient } from "@/lib/supabase/server";
 export default async function ResetPasswordPage({
   searchParams,
 }: {
-  searchParams: { code: string };
+  searchParams: Promise<{ code: string }>;
 }) {
   const supabase = await createClient();
-  const code = searchParams.code;
+  const code = (await searchParams).code;
 
   const {
     data: { user },

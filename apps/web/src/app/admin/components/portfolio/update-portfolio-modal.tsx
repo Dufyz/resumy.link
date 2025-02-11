@@ -181,7 +181,7 @@ export function UpdatePortfolioModal({ portfolio }: { portfolio: Portfolio }) {
     }
 
     checkUsernameAvailability();
-  }, [debouncedUsername, form]);
+  }, [debouncedUsername, form, portfolio.username]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen} modal>
@@ -233,7 +233,11 @@ export function UpdatePortfolioModal({ portfolio }: { portfolio: Portfolio }) {
                     }
                     onAvatarChange={handleAvatarChange}
                     isSubmitting={isSubmitting}
-                    error={errors.avatar_path}
+                    error={
+                      errors.avatar_path
+                        ? { message: errors.avatar_path.message || "" }
+                        : undefined
+                    }
                   />
                   <div>
                     <FormField

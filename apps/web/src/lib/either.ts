@@ -1,6 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable max-classes-per-file */
-
 /**
  * Represents a value of one of two possible types (a disjoint union).
  *
@@ -226,6 +223,7 @@ export async function attempt<S, E = Error>(
   try {
     const value = await fn();
     return success(value);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return failure(error);
   }

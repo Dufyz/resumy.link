@@ -17,7 +17,7 @@ import {
 import { SignInSchema, signInSchema } from "../../schemas/sign-in-schema";
 import { useState } from "react";
 import { signIn, signInWithProvider } from "../../actions/sign-in-action";
-import { IconBrandGithub, IconBrandGoogleFilled } from "@tabler/icons-react";
+import { IconBrandGithub } from "@tabler/icons-react";
 import { Provider } from "@supabase/supabase-js";
 
 export function SignInForm() {
@@ -38,6 +38,7 @@ export function SignInForm() {
       await signIn(email, password);
 
       router.push("/admin");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       if (e?.message === "Invalid login credentials") {
         return form.setError("root", { message: "Email ou senha inválidas" });

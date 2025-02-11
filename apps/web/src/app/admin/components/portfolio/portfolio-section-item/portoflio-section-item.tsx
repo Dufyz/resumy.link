@@ -15,16 +15,8 @@ import {
 import PortfolioSectionItemProject from "./portoflio-section-item-project";
 import PortfolioSectionItemLanguage from "./portoflio-section-item-language";
 import { IconGripVertical } from "@tabler/icons-react";
-import { sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
+import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
-  useDraggable,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
 
 export function PortfolioSectionItem({
   portfolioSectionItem,
@@ -47,18 +39,6 @@ export function PortfolioSectionItem({
     transform: CSS.Transform.toString(transform),
     transition,
   };
-
-  const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: {
-        distance: 10,
-      },
-    }),
-    useSensor(TouchSensor, {}),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
 
   const onToggleIsActive = async () => {
     const isActive = !portfolioSectionItem.is_active;

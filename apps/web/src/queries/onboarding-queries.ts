@@ -22,6 +22,7 @@ export async function postOnboarding(body: {
     const response = await api.post("/onboarding", body);
 
     return success(response.data);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return failure({
       status: error.response.status,

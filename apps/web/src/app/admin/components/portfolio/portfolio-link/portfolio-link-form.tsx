@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,8 +25,8 @@ export default function PortfolioLinkForm({
   onChange,
 }: {
   index: number;
-  errors: any;
-  register: any;
+  errors: any; //TODO: Fix any
+  register: any; //TODO: Fix any
   link: { type: PortfolioLinkType; url: string };
   onRemove: (index: number) => void;
   onChange: (
