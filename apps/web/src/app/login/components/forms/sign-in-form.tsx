@@ -16,8 +16,9 @@ import {
 } from "@/components/ui/form";
 import { SignInSchema, signInSchema } from "../../schemas/sign-in-schema";
 import { useState } from "react";
-import { signIn } from "../../actions/sign-in-action";
+import { signIn, signInWithProvider } from "../../actions/sign-in-action";
 import { IconBrandGithub, IconBrandGoogleFilled } from "@tabler/icons-react";
+import { Provider } from "@supabase/supabase-js";
 
 export function SignInForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -48,12 +49,18 @@ export function SignInForm() {
     }
   }
 
-  const handleSocialLogin = async (provider: string) => {
+  const handleSocialLogin = async (provider: Provider) => {
     try {
       setIsLoading(true);
-      await signIn(provider, "/admin");
+      const data = await signInWithProvider(provider);
+
+      if (!data?.url) return;
+
+      window.open(data.url, "_self");
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -122,16 +129,6 @@ export function SignInForm() {
       </div>
 
       <div className="space-y-3">
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full h-12"
-          onClick={() => handleSocialLogin("google")}
-          disabled={isLoading}
-        >
-          <IconBrandGoogleFilled />
-          <p>Continuar com Google</p>
-        </Button>
         <Button
           type="button"
           variant="outline"

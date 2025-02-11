@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Palette, BarChart, Settings, Crown, Link2, Code2 } from "lucide-react";
+import { Palette, BarChart, Link2, Code2 } from "lucide-react";
 import { UserProfileMenu } from "./user-profile-menu";
 import { cn } from "@/lib/utils";
 import PaymentModal from "./payment-modal";
@@ -23,12 +23,6 @@ const SIDEBAR_ITEMS = [
     icon: <BarChart className="h-5 w-5" />,
     label: "Análise",
     href: "/admin/analytics",
-    disabled: true,
-  },
-  {
-    icon: <Settings className="h-5 w-5" />,
-    label: "Configurações",
-    href: "/admin/settings",
     disabled: true,
   },
 ];
