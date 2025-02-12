@@ -16,7 +16,7 @@ export default function PortfolioSection({
 }: {
   portfolioSection: PortfolioSectionType;
 }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const portfolioSectionItems = portfolioSection.portfolio_section_items || [];
 
