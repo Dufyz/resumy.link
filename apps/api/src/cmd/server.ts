@@ -25,13 +25,13 @@ app.use(
 
 app.use(helmet());
 
-app.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-    message: "Muitas requisições. Tente novamente mais tarde.",
-  })
-);
+// app.use(
+//   rateLimit({
+//     windowMs: 15 * 60 * 1000,
+//     max: 100,
+//     message: "Muitas requisições. Tente novamente mais tarde.",
+//   })
+// );
 
 app.use(morgan("dev"));
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Crown } from "lucide-react";
+import { Check, Crown, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,6 +11,7 @@ import {
 import { PLANS } from "@/data/plans-data";
 import { postCreateStripeCheckoutSession } from "@/queries/stripe-queries";
 import useUser from "@/hooks/useUser";
+import { useState } from "react";
 
 interface PricingCardProps {
   nome: string;
@@ -35,22 +36,32 @@ const PricingCard: React.FC<PricingCardProps> = ({
 }) => {
   const { user } = useUser();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   async function handlePlanSelection() {
     if (!user) return;
     if (plan === "free") return;
 
-    const checkoutSessionOrError = await postCreateStripeCheckoutSession({
-      email: user.email,
-      price: plan,
-    });
+    try {
+      setIsLoading(true);
 
-    if (checkoutSessionOrError.isFailure()) return;
+      const checkoutSessionOrError = await postCreateStripeCheckoutSession({
+        email: user.email,
+        price: plan,
+      });
 
-    const { session } = checkoutSessionOrError.value;
+      if (checkoutSessionOrError.isFailure()) return;
 
-    if (!session.url) return;
+      const { session } = checkoutSessionOrError.value;
 
-    window.open(session.url, "_self");
+      if (!session.url) return;
+
+      window.open(session.url, "_self");
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -79,6 +90,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
           ))}
         </ul>
       </div>
+
       <Button
         onClick={handlePlanSelection}
         className={`w-full py-4 md:py-6 text-base md:text-lg mt-6 md:mt-8 ${
@@ -88,7 +100,14 @@ const PricingCard: React.FC<PricingCardProps> = ({
         }`}
         disabled={disabled}
       >
-        {cta}
+        {isLoading ? (
+          <div className="flex items-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <span>Carregando...</span>
+          </div>
+        ) : (
+          <p>{cta}</p>
+        )}
       </Button>
     </div>
   );

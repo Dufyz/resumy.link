@@ -369,7 +369,7 @@ export function UpdatePortfolioModal({ portfolio }: { portfolio: Portfolio }) {
                       <span>Salvando...</span>
                     </div>
                   ) : (
-                    <span>Salvar</span>
+                    <p>Salvar</p>
                   )}
                 </Button>
               </div>

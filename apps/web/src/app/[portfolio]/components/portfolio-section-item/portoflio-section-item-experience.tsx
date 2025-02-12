@@ -28,11 +28,19 @@ export default function PortfolioSectionItemExperience({
           <p>{metadata.organization}</p>
           <span>•</span>
           <div className="flex items-center gap-2">
-            <p>{new Date(metadata.start_date).getFullYear()}</p>
+            <p>
+              {new Date(metadata.start_date).toLocaleDateString("pt-BR", {
+                month: "2-digit",
+                year: "numeric",
+              })}
+            </p>
             <span>-</span>
             <p>
               {metadata.end_date
-                ? new Date(metadata.end_date).getFullYear()
+                ? new Date(metadata.end_date).toLocaleDateString("pt-BR", {
+                    month: "2-digit",
+                    year: "numeric",
+                  })
                 : "atual"}
             </p>
           </div>

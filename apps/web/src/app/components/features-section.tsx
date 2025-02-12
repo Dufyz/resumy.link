@@ -78,16 +78,8 @@ export default function FeaturesSection() {
                 }}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg rounded-lg"
               >
-                Comece agora gratuitamente
+                Começar agora
               </Button>
-            </div>
-            <div className="relative h-[300px] lg:h-[400px]">
-              <Image
-                src="/placeholder.svg"
-                alt="Developer Portfolio"
-                fill
-                className="object-contain"
-              />
             </div>
           </div>
         </div>

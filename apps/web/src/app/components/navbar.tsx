@@ -24,7 +24,6 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
-            className="hidden sm:inline-flex"
             onClick={() => {
               redirect("/login");
             }}
@@ -32,7 +31,7 @@ export default function Navbar() {
             Entrar
           </Button>
           <Button
-            className="bg-blue-600 text-white hover:bg-blue-700"
+            className="hidden sm:inline-flex bg-blue-600 text-white hover:bg-blue-700"
             onClick={() => {
               redirect("/login?mode=sign-up");
             }}

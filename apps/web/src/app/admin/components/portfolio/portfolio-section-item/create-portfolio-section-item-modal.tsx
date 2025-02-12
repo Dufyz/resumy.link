@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, X } from "lucide-react";
+import { Loader2, Plus, X } from "lucide-react";
 import {
   CreatePortfolioSectionItemSchema,
   createPortfolioSectionItemSchema,
@@ -26,6 +26,7 @@ import {
 import { PortfolioSection } from "@/types/portfolio-section-type";
 import { postPortfolioSectionItem } from "@/queries/portfolio-section-item-queries";
 import usePortfolio from "@/hooks/usePortfolio";
+import { cn } from "@/lib/utils";
 
 export function CreatePortfolioSectionItemModal({
   portfolioSection,
@@ -37,6 +38,7 @@ export function CreatePortfolioSectionItemModal({
   const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState("");
   const [isCurrent, setIsCurrent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { createPortfolioSectionItem } = usePortfolio();
 
@@ -78,6 +80,7 @@ export function CreatePortfolioSectionItemModal({
 
   const onSubmit = async (data: CreatePortfolioSectionItemSchema) => {
     try {
+      setIsSubmitting(true);
       const portfolioSectionItemOrError = await postPortfolioSectionItem(data);
 
       if (portfolioSectionItemOrError.isFailure()) return;
@@ -89,6 +92,8 @@ export function CreatePortfolioSectionItemModal({
       form.reset();
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -311,8 +316,21 @@ export function CreatePortfolioSectionItemModal({
           {renderTypeSpecificFields()}
 
           <div className="flex justify-end gap-2">
-            <Button type="submit" autoFocus>
-              Salvar
+            <Button
+              type="submit"
+              className={cn("w-full", {
+                "cursor-not-allowed opacity-70": isSubmitting,
+              })}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Salvando...</span>
+                </div>
+              ) : (
+                <p>Salvar</p>
+              )}
             </Button>
             <Button
               variant="outline"

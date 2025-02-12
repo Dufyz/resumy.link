@@ -6,6 +6,43 @@ import { getPortfolioSectionsByPortfolioId } from "@/queries/portfolio-section-q
 import { getPortfolioSectionItemsByPortfolioId } from "@/queries/portfolio-section-item-queries";
 import { sortPortfolioSections } from "../../lib/utils/sortPortfolioSections";
 import { sortPortfolioSectionItems } from "@/lib/utils/sortPortfolioSectionItems";
+import getS3Image from "@/lib/utils/getS3Image";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{
+    portfolio: string;
+  }>;
+}) {
+  const { portfolio: portfolioUsername } = await params;
+  const portfolioOrError = await getPortfolioByUsername(portfolioUsername);
+
+  if (portfolioOrError.isFailure()) {
+    return {
+      title: "Portfólio não encontrado",
+      description: "O portfólio que você está procurando não foi encontrado.",
+    };
+  }
+
+  const { portfolio } = portfolioOrError.value;
+
+  return {
+    title: `${portfolio.title} | Portfólio` || "Portfólio Profissional",
+    description:
+      portfolio.bio || "Veja o portfólio profissional deste usuário.",
+    openGraph: {
+      title: `${portfolio.title} | Portfólio`,
+      description:
+        portfolio.bio || "Veja o portfólio profissional deste usuário.",
+      images: [
+        portfolio.avatar_path
+          ? getS3Image(portfolio.avatar_path)
+          : "/placeholder.svg",
+      ],
+    },
+  };
+}
 
 export default async function PortfolioPage({
   params,
@@ -17,11 +54,9 @@ export default async function PortfolioPage({
   const { portfolio: portfolioUsername } = await params;
 
   const portfolioOrError = await getPortfolioByUsername(portfolioUsername);
-
   if (portfolioOrError.isFailure()) return <NotFoundPage />;
 
   const { portfolio } = portfolioOrError.value;
-
   if (!portfolio.is_active) return <NotFoundPage />;
 
   const [portfolioSectionsOrError, portfolioSectionItemsOrError] =
@@ -45,7 +80,6 @@ export default async function PortfolioPage({
             (item) => item.portfolio_section_id === section.id && item.is_active
           ) || []
         );
-
         return section;
       }) || []
   );

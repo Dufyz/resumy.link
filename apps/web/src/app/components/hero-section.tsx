@@ -41,13 +41,14 @@ export default function HeroSection() {
             </Button>
           </div>
         </div>
-        <div className="relative h-[600px] hidden lg:block">
+        <div className="relative h-[400px] hidden lg:block">
           <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-lg backdrop-blur-3xl transform rotate-6"></div>
           <Image
-            src="/placeholder.svg"
+            src="/hero-section.png"
             alt="Portfolio Preview"
             fill
-            className="object-contain transform -rotate-6 hover:rotate-0 transition-transform duration-500"
+            quality={100}
+            className="object-cover rounded-md transform -rotate-6 hover:rotate-0 transition-transform duration-500"
           />
         </div>
       </div>
