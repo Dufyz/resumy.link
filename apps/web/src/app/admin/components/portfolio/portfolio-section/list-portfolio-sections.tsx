@@ -34,10 +34,6 @@ export default function ListPortfolioSections({
 }: {
   portfolio: Portfolio;
 }) {
-  const portfolioSections = sortPortfolioSections(
-    portfolio.portfolio_sections || []
-  );
-
   const { updatePortfolioSection } = usePortfolio();
 
   const [activeId, setActiveId] = useState<null | number>(null);
@@ -52,6 +48,19 @@ export default function ListPortfolioSections({
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
+  );
+
+  const portfolioSections = sortPortfolioSections(
+    portfolio.portfolio_sections || []
+  ).map((section) => ({
+    ...section,
+    portfolio_section_items: portfolio.portfolio_section_items?.filter(
+      (i) => i.portfolio_section_id === section.id
+    ),
+  }));
+
+  const activePortfolioSection = portfolioSections.find(
+    (section) => section.id === activeId
   );
 
   const checkForEqualWeights = (sections: PortfolioSectionType[]) => {
@@ -152,32 +161,13 @@ export default function ListPortfolioSections({
       >
         <AnimatePresence>
           {portfolioSections.map((s) => (
-            <PortfolioSection
-              key={s.id}
-              portfolioSection={{
-                ...s,
-                portfolio_section_items:
-                  portfolio.portfolio_section_items?.filter(
-                    (i) => i.portfolio_section_id === s.id
-                  ) || [],
-              }}
-            />
+            <PortfolioSection key={s.id} portfolioSection={s} />
           ))}
         </AnimatePresence>
       </SortableContext>
       <DragOverlay>
-        {activeId ? (
-          <PortfolioSection
-            portfolioSection={
-              {
-                ...portfolioSections.find((s) => s.id === activeId),
-                portfolio_section_items:
-                  portfolio.portfolio_section_items?.filter(
-                    (i) => i.portfolio_section_id === activeId
-                  ) || [],
-              } as unknown as PortfolioSectionType
-            }
-          />
+        {activeId && activePortfolioSection ? (
+          <PortfolioSection portfolioSection={activePortfolioSection} />
         ) : null}
       </DragOverlay>
     </DndContext>
